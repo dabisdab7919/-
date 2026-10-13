@@ -1,0 +1,20 @@
+<!-- 메인 화면: 배경 영상 + 가운데 문구 (Cargo 코드 보기에 그대로 붙여넣기) -->
+<div style="position:relative;width:100%;height:100vh;min-height:480px;overflow:hidden;background:#e8e8e8;">
+
+  <!-- 배경 영상: 자동 재생 · 소리 없음 · 반복 -->
+  <video src="https://freight.cargo.site/t/original/i/D3177001505764894321388420658942/1.mp4" autoplay muted loop playsinline preload="auto" disablepictureinpicture
+         style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"></video>
+
+  <!-- 글자가 잘 보이도록 영상 위에 옅은 흰색 막 -->
+  <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.4);pointer-events:none;"></div>
+
+  <!-- 문구: 세로 가운데 -->
+  <div style="position:relative;z-index:1;box-sizing:border-box;width:100%;height:100%;display:flex;align-items:center;padding:0 4vw;">
+    <h1 style="margin:0;padding:0;max-width:1200px;font-size:3.65rem;line-height:1.08;letter-spacing:-.01em;"><b style="font-weight:700;font-variation-settings:'wght' 700;">Value through connection:</b> An architectural archive <span class="vc-u" style="display:inline;background-image:linear-gradient(currentcolor,currentcolor);background-position:0 1.05em;background-repeat:no-repeat;background-size:100% .105em;transition:background-size .3s;">reinterpreted</span> through the lens of <span class="vc-u" style="display:inline;background-image:linear-gradient(currentcolor,currentcolor);background-position:0 1.05em;background-repeat:no-repeat;background-size:100% .105em;transition:background-size .3s;">valuation</span>—where design logic meets the <span class="vc-u" style="display:inline;background-image:linear-gradient(currentcolor,currentcolor);background-position:0 1.05em;background-repeat:no-repeat;background-size:100% .105em;transition:background-size .3s;">quantifiable worth</span> of space.</h1>
+  </div>
+
+  <!-- 커서를 올리면 밑줄이 왼쪽으로 줄어들며 사라짐 (Hassell 사이트와 같은 효과) -->
+  <style>
+    .vc-u:hover { background-size: 0px .105em !important; }
+  </style>
+</div>
