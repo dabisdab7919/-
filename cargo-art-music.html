@@ -79,17 +79,27 @@
     document.body.appendChild(lb);
     stage = lb.querySelector('.lb-stage'); count = lb.querySelector('.lb-count'); cap = lb.querySelector('.lb-cap');
   }
-  function srcOf(mi){
+  function srcOf(mi){                             /* 이미지 주소 읽기: srcset에 있는 가장 큰 크기를 우선 사용 */
     var r = mi.shadowRoot, el = (r && r.querySelector('img')) || mi.querySelector('img');
-    return el ? (el.currentSrc || el.src) : '';
+    if(!el) return {best:'', cur:''};
+    var ss = el.getAttribute('srcset') || '';
+    if(!ss && el.parentNode && el.parentNode.querySelector){ var so = el.parentNode.querySelector('source'); ss = so ? (so.getAttribute('srcset') || '') : ''; }
+    var best = '', bw = 0;
+    ss.split(',').forEach(function(p){
+      p = p.trim().split(/\s+/); var w = parseFloat(p[1]) || 0;
+      if(p[0] && w >= bw){ bw = w; best = p[0]; }
+    });
+    var cur = el.currentSrc || el.src || '';
+    return {best: best || cur, cur: cur};
   }
   function show(){
     var mi = list[idx], src = srcOf(mi), node;
     stage.innerHTML = '';
-    if(src){                                       /* 작은 썸네일 주소면 큰 해상도를 차례로 시도하고, 모두 실패하면 원래 주소 */
-      var cands = [2400, 1600].map(function(w){ return src.replace(/\/w\/\d+\//, '/w/' + w + '/'); })
-        .filter(function(u, i, a){ return u !== src && a.indexOf(u) === i; });
-      cands.push(src);
+    if(src.best){                                  /* 큰 해상도를 차례로 시도하고, 모두 실패하면 원래 주소 */
+      var base = src.best;
+      var cands = [base, 2400, 1600].map(function(w){ return typeof w === 'number' ? base.replace(/\/w\/\d+\//, '/w/' + w + '/') : w; })
+        .filter(function(u, i, a){ return a.indexOf(u) === i; });
+      if(cands.indexOf(src.cur) < 0) cands.push(src.cur);
       var k = 0;
       node = document.createElement('img'); node.alt = '';
       node.onerror = function(){ k++; if(k < cands.length) node.src = cands[k]; };
