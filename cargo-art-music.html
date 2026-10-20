@@ -86,11 +86,14 @@
   function show(){
     var mi = list[idx], src = srcOf(mi), node;
     stage.innerHTML = '';
-    if(src){                                                                 /* 작은 썸네일 주소면 큰 해상도로 바꿔 요청, 실패하면 원래 주소 */
-      var big = src.replace(/\/w\/\d+\//, '/w/2400/');
+    if(src){                                       /* 작은 썸네일 주소면 큰 해상도를 차례로 시도하고, 모두 실패하면 원래 주소 */
+      var cands = [2400, 1600].map(function(w){ return src.replace(/\/w\/\d+\//, '/w/' + w + '/'); })
+        .filter(function(u, i, a){ return u !== src && a.indexOf(u) === i; });
+      cands.push(src);
+      var k = 0;
       node = document.createElement('img'); node.alt = '';
-      node.onerror = function(){ node.onerror = null; node.src = src; };
-      node.src = big;
+      node.onerror = function(){ k++; if(k < cands.length) node.src = cands[k]; };
+      node.src = cands[0];
     }
     else { node = mi.cloneNode(true); node.removeAttribute('slot'); node.classList.remove('zoomable'); }   /* 주소를 못 읽으면 Cargo 이미지 요소를 그대로 복제 */
     stage.appendChild(node);
