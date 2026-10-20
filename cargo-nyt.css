@@ -24,11 +24,13 @@
 .nyt .nyt-ss-in{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;position:relative;z-index:1}
 .nyt .nyt-ss:hover .nyt-ss-in{transform:scale(1.045);z-index:5;box-shadow:0 10px 28px rgba(0,0,0,.22)}
 .nyt .nyt-ss media-item{cursor:zoom-in}
+.nyt .nyt-ss media-item[disable-zoom="true"]{cursor:default}
 .nyt .nyt-ss gallery-slideshow{margin-bottom:0}
 .nyt .nyt-ss gallery-slideshow::part(slideshow-nav){opacity:0;transition:opacity .25s}
 .nyt .nyt-ss:hover gallery-slideshow::part(slideshow-nav){opacity:1}
 
 /* 확대 보기 */
+.nyt-lb:not(.open){display:none !important}
 .nyt-lb{position:fixed;inset:0;z-index:2147483000;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column}
 .nyt-lb.open{display:flex}
 .nyt-lb .lb-stage{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;height:84vh;padding:0 4rem}
@@ -53,9 +55,6 @@
   .nyt .nyt-story+.nyt-story{border-left:0;border-top:1px solid var(--hair);margin-top:1.4rem}
   .nyt .nyt-deck{font-size:1.1rem}
 }
-
-/* 이 페이지만 더 넓게 (선택) */
-[id="B0539025029"] .page-layout{max-width:88%}
 
 /* 긴 설명 글(2단) / 전체 폭 이미지 */
 .nyt .nyt-notes{margin-top:2.6rem;border-top:1px solid var(--ink);padding-top:1.2rem}

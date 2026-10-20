@@ -116,7 +116,10 @@
     }
     for(var i = 0; i < path.length; i++){
       var n = path[i];
-      if(n.tagName === 'MEDIA-ITEM' && n.closest && n.closest('.nyt-ss')){ open(n); return; }
+      if(n.tagName === 'MEDIA-ITEM' && n.closest && n.closest('.nyt-ss')){
+        if(n.getAttribute('disable-zoom') === 'true') return;   /* 확대 끄기로 지정된 이미지는 열지 않음 */
+        open(n); return;
+      }
     }
   });
   document.addEventListener('keydown', function(e){
