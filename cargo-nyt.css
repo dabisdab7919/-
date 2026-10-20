@@ -63,3 +63,23 @@
 .nyt .nyt-cols .nyt-p{break-inside:avoid-column}
 .nyt .nyt-fig{margin-top:2.6rem}
 @media (max-width:820px){.nyt .nyt-cols{column-count:1}}
+
+/* 4단 기사 (카테고리가 4개인 페이지) */
+.nyt .nyt-row.nyt-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.nyt .nyt-row.nyt-4 .nyt-story{padding:1.2rem 1rem 0}
+.nyt .nyt-row.nyt-4 .nyt-story:first-child{padding-left:0}
+.nyt .nyt-row.nyt-4 .nyt-story:last-child{padding-right:0}
+.nyt .nyt-row.nyt-4 .nyt-h2{font-size:1.5rem}
+.nyt .nyt-cols .nyt-lab{display:block}
+@media (max-width:1100px){
+  .nyt .nyt-row.nyt-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:first-child,.nyt .nyt-row.nyt-4 .nyt-story:last-child{padding:1.2rem 1rem 0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd){padding-left:0;border-left:0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding-right:0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(n+3){border-top:1px solid var(--hair);margin-top:1.4rem}
+}
+@media (max-width:820px){
+  .nyt .nyt-row.nyt-4{grid-template-columns:1fr}
+  .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd),.nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding:1.2rem 0 0;border-left:0}
+  .nyt .nyt-row.nyt-4 .nyt-story+.nyt-story{border-top:1px solid var(--hair);margin-top:1.4rem}
+}
