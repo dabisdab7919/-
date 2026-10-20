@@ -56,3 +56,10 @@
 
 /* 이 페이지만 더 넓게 (선택) */
 [id="B0539025029"] .page-layout{max-width:88%}
+
+/* 긴 설명 글(2단) / 전체 폭 이미지 */
+.nyt .nyt-notes{margin-top:2.6rem;border-top:1px solid var(--ink);padding-top:1.2rem}
+.nyt .nyt-cols{column-count:2;column-gap:2.4rem}
+.nyt .nyt-cols .nyt-p{break-inside:avoid-column}
+.nyt .nyt-fig{margin-top:2.6rem}
+@media (max-width:820px){.nyt .nyt-cols{column-count:1}}
