@@ -88,7 +88,7 @@
     stage.innerHTML = '';
     if(src.best){                                  /* 큰 해상도를 차례로 시도하고, 모두 실패하면 원래 주소 */
       var base = src.best;
-      var cands = [base, 2400, 1600].map(function(w){ return typeof w === 'number' ? base.replace(/\/w\/\d+\//, '/w/' + w + '/') : w; })
+      var cands = [2400, base, 1600].map(function(w){ return typeof w === 'number' ? base.replace(/\/w\/\d+\//, '/w/' + w + '/') : w; })
         .filter(function(u, i, a){ return a.indexOf(u) === i; });
       if(cands.indexOf(src.cur) < 0) cands.push(src.cur);
       var k = 0;
