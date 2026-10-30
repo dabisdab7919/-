@@ -22,7 +22,7 @@ PROJECTS = [
 ]
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Noto+Serif+KR:wght@400;600&display=swap">')
+         '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap">')
 
 VIDEO_EXT = ('.mp4', '.webm', '.mov', '.m4v')
 PHOTO_EXT = ('.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif')
@@ -212,14 +212,44 @@ class Site:
 </section>'''
         self.page('info.html', f'Info — {OWNER}', body, current='info')
 
+    def graph(self):
+        """메인 그래프: 프로젝트 6개를 잇는 신문 차트 스타일(글자는 실제 텍스트라 본문과 같은 서체)."""
+        W, H, L, R, T, B = 1000, 430, 70, 970, 30, 380
+        vals = [.39, .53, 1.0, .81, .63, .67]            # 개념도용 상대 높이(실측 값이 아님)
+        step = (R - L) / len(PROJECTS)
+        pts = [(L + (i + .5) * step, B - v * (B - T - 40)) for i, v in enumerate(vals)]
+        line = ' '.join(f'{x:.1f},{y:.1f}' for x, y in pts)
+        grid = ''.join(f'<line class="g-grid" x1="{L}" x2="{R}" y1="{T + k * (B - T) / 4:.1f}" y2="{T + k * (B - T) / 4:.1f}"/>' for k in range(4))
+        stems = ''.join(f'<line class="g-stem" x1="{x:.1f}" x2="{x:.1f}" y1="{y:.1f}" y2="{B}"/>' for x, y in pts)
+        dots = ''.join(
+            f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)}"><title>{html.escape(name)}</title>'
+            f'<circle class="g-hit" cx="{x:.1f}" cy="{y:.1f}" r="26"/><circle class="g-c" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/>'
+            f'<text class="g-n" x="{x:.1f}" y="{y - 16:.1f}" text-anchor="middle">{i + 1:02d}</text></a>'
+            for i, ((x, y), (slug, name)) in enumerate(zip(pts, PROJECTS)))
+        svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Six projects plotted along one rising and falling curve" class="g-svg">'
+               f'{grid}<line class="g-base" x1="{L}" x2="{R}" y1="{B}" y2="{B}"/>{stems}'
+               f'<polygon class="g-area" points="{pts[0][0]:.1f},{B} {line} {pts[-1][0]:.1f},{B}"/>'
+               f'<polyline class="g-line" points="{line}"/>{dots}'
+               f'<text class="g-ax" x="{L}" y="{T - 12}">Value</text>'
+               f'<text class="g-ax" x="{R}" y="{B + 30}" text-anchor="end">Connection \u2192</text></svg>')
+        cols = ''.join(
+            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m">Architecture</span></a></li>'
+            for i, (slug, name) in enumerate(PROJECTS))
+        return (f'<div class="g-head"><span class="nyt-k">The Index</span><h2>Six Projects, One Curve</h2></div>'
+                f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>'
+                f'<p class="g-note">Illustrative diagram \u2014 the curve is conceptual, not measured data.</p>')
+
     def index(self):
-        graph = (ROOT / 'docs' / 'partials' / 'graph.html').read_text(encoding='utf-8')
+        graph = self.graph()
         body = f'''<section class="hero" aria-label="Value through Connection">
   <video autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true">
     <source src="assets/video/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-text">
-    <p class="vtc">Value through Connection:<br><br>An architectural archive <span class="vc-u">reinterpreted</span> through the lens of <span class="vc-u">valuation</span>—where design logic meets the <span class="vc-u">quantifiable worth</span> of space.</p>
+    <span class="nyt-k">An Architectural Archive</span>
+    <h1 class="vtc-h">Value through Connection</h1>
+    <p class="vtc">An architectural archive <span class="vc-u">reinterpreted</span> through the lens of <span class="vc-u">valuation</span>\u2014where design logic meets the <span class="vc-u">quantifiable worth</span> of space.</p>
+    <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
   </div>
 </section>
 <section class="graph" id="projects" aria-label="Projects">

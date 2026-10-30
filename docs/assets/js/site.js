@@ -11,6 +11,14 @@
     tick(); setInterval(tick, 1000);
   }
 
+  /* ---------- 그래프: 아래 목록에 마우스를 올리면 해당 점 강조 ---------- */
+  var dots = document.querySelectorAll('.g-dot');
+  [].forEach.call(document.querySelectorAll('.g-cols li'), function(li, i){
+    var on = function(v){ return function(){ if(dots[i]) dots[i].classList.toggle('on', v); }; };
+    li.addEventListener('mouseenter', on(true)); li.addEventListener('mouseleave', on(false));
+    li.addEventListener('focusin', on(true)); li.addEventListener('focusout', on(false));
+  });
+
   /* ---------- 확대 보기 ---------- */
   var lb, stage, lbCount, lbCap, list = [], idx = 0, lbOpen = false;
 
