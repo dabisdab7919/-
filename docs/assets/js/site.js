@@ -48,12 +48,12 @@
     else node.src = orig;
     stage.appendChild(node);
     lbCount.textContent = (idx + 1) + ' / ' + list.imgs.length;
-    lbCap.textContent = list.cap || '';
+    lbCap.textContent = (list.capFn ? list.capFn(idx) : list.cap) || '';
     lb.classList.toggle('single', list.imgs.length < 2);
   }
   function lbGo(n){ idx = (n + list.imgs.length) % list.imgs.length; lbShow(); if(list.sync) list.sync(idx); }
-  function lbOpenAt(imgs, i, cap, sync){
-    buildLB(); list = {imgs: imgs, cap: cap, sync: sync}; idx = i; lbShow();
+  function lbOpenAt(imgs, i, capFn, sync){
+    buildLB(); list = {imgs: imgs, capFn: capFn, sync: sync}; idx = i; lbShow();
     lb.classList.add('open'); lbOpen = true;
     document.documentElement.style.overflow = 'hidden';
   }
@@ -93,8 +93,12 @@
       if(im.complete && im.naturalWidth && i === cur) ratio(im);
     });
 
+    var capEl = ss.parentNode.querySelector('.nyt-cap'), caps = null;
+    if(capEl && capEl.getAttribute('data-caps')){ try{ caps = JSON.parse(capEl.getAttribute('data-caps')); }catch(e){} }
+    function capOf(i){ return caps ? (caps[i] || '') : ((capEl || {}).textContent || ''); }
     function paint(){
       if(count) count.textContent = (cur + 1) + ' / ' + imgs.length;
+      if(caps && capEl) capEl.innerHTML = capOf(cur);
     }
     function show(n, fromLB){
       imgs[cur].classList.remove('is-active');
@@ -108,7 +112,7 @@
     if(zoom && !ss.classList.contains('nozoom')){
       zoom.addEventListener('click', function(){
         stop();
-        lbOpenAt(imgs, cur, (ss.parentNode.querySelector('.nyt-cap') || {}).textContent, function(i){ show(i); });
+        lbOpenAt(imgs, cur, function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
       });
     }
     var sx = null;

@@ -61,6 +61,7 @@ main{display:block;padding-top:2rem}
 .nyt .nyt-deck{font:1.35rem/1.3 var(--serif);color:var(--sub);max-width:46rem}
 .nyt .nyt-by{font:.78rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin:1rem 0 1.6rem}
 .nyt .nyt-lead-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:1.6rem;align-items:start}
+.nyt .nyt-lead-grid.no-text{grid-template-columns:1fr}
 .nyt .nyt-p{font:1.02rem/1.6 var(--serif);margin:0 0 1rem;word-break:keep-all}
 .nyt .nyt-lab{display:block;font:700 .72rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
 .nyt .nyt-sep{border-top:1px solid var(--hair);padding-top:1rem;margin-top:.4rem}
@@ -90,6 +91,7 @@ main{display:block;padding-top:2rem}
 .ss-frame{position:relative;overflow:hidden;background:#f1f1f1;aspect-ratio:var(--ar,4/3);transition:aspect-ratio .3s}
 .ss-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .5s;pointer-events:none}
 .ss-frame img.is-active{opacity:1}
+.ss-frame img.has-border{border:1px solid rgba(0,0,0,.85)}
 .ss-frame .ph{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:1rem;text-align:center;font:.7rem/1.4 var(--sans);color:#999;word-break:break-all}
 .ss-frame img.is-active.is-broken+.ph{display:flex}
 .ss-frame img.is-broken{opacity:0}
@@ -140,7 +142,7 @@ main{display:block;padding-top:2rem}
   .site-foot{font-size:1rem;grid-template-columns:1fr;gap:.4rem}
   .site-foot>:last-child{justify-self:start}
   .vtc{font-size:clamp(1.7rem,7.2vw,2.6rem)}
-  .nyt .nyt-lead-grid,.nyt .nyt-row,.nyt .nyt-row.nyt-4{grid-template-columns:1fr}
+  .nyt .nyt-lead-grid,.nyt .nyt-lead-grid.no-text,.nyt .nyt-row,.nyt .nyt-row.nyt-4{grid-template-columns:1fr}
   .nyt .nyt-story,.nyt .nyt-story:first-child,.nyt .nyt-story:last-child,
   .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd),.nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding:1.2rem 0 0;border-left:0}
   .nyt .nyt-story+.nyt-story,.nyt .nyt-row.nyt-4 .nyt-story+.nyt-story{border-top:1px solid var(--hair);margin-top:1.4rem}

@@ -17,8 +17,8 @@ PROJECTS = [
     ('attract', 'Attract Center'),
     ('connect', 'Connect Office'),
     ('art-music', 'Art & Music Village'),
-    ('hwamyeong', 'Hwamyeong'),
-    ('rewriting', 'Rewriting'),
+    ('hwamyeong', 'Hwamyeong Farm Therapy'),
+    ('rewriting', 'Rewriting the House'),
 ]
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -43,7 +43,7 @@ class Site:
     def base_url(self, h):
         return self.manifest.get(h) or f'https://freight.cargo.site/w/1600/i/{h}/image.jpg'
 
-    def img(self, h, alt, active=False, eager=False):
+    def img(self, h, alt, active=False, eager=False, border=False):
         base = self.base_url(h)
         src, full = sized(base, 1200), sized(base, 2400)
         a = [f'src="{html.escape(src)}"']
@@ -52,13 +52,14 @@ class Site:
         a += [f'data-hash="{h}"', f'alt="{html.escape(alt)}"']
         if not (active or eager):
             a.append('loading="lazy"')
-        cls = ' class="is-active"' if active else ''
+        cls = ' '.join(c for c, on in (('is-active', active), ('has-border', border)) if on)
+        cls = f' class="{cls}"' if cls else ''
         return f'<img{cls} {" ".join(a)}><span class="ph">{h}</span>'
 
-    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False):
+    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=()):
         cls = 'nyt-ss' + (' nyt-wide' if wide else '') + (' nozoom' if nozoom else '')
         auto = f' data-autoplay="{autoplay:g}"' if autoplay else ''
-        slides = ''.join(self.img(h, alt, active=(i == 0), eager=(wide and i < 2)) for i, h in enumerate(images))
+        slides = ''.join(self.img(h, alt, active=(i == 0), eager=(wide and i < 2), border=(h in borders)) for i, h in enumerate(images))
         zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
         nav = ('<button class="ss-nav ss-prev" type="button" aria-label="이전"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>'
                '<button class="ss-nav ss-next" type="button" aria-label="다음"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>'
@@ -126,12 +127,18 @@ class Site:
             for p in sec['paragraphs']:
                 text += f'      <div class="nyt-p">{p}</div>\n'
         lead = d['lead']
+        text_html = f'<div class="nyt-text">\n{text}      </div>' if d['sections'] else ''
         stories = ''
         for s in d['stories']:
+            caps = s.get('slide_caps')
+            cap_attr = f' data-caps="{html.escape(json.dumps(caps, ensure_ascii=False), quote=True)}"' if caps else ''
+            cap_text = caps[0] if caps else s['cap']
+            alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(s["images"], title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"])), nozoom=s.get("nozoom", False))}\n'
-                        f'      <div class="nyt-cap">{s["cap"]}</div>\n    </div>\n')
+                        f'      {self.slideshow(s["images"], alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n    </div>\n')
+        deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
         if d.get('notes'):
@@ -145,12 +152,11 @@ class Site:
   <div class="nyt-lead">
     <span class="nyt-k">{d["kicker"]}</span>
     <h1 class="nyt-h1">{d["title"]}</h1>
-    <div class="nyt-deck">{d["deck"]}</div>
+    {deck_html}
     <div class="nyt-by">{d["by"]}</div>
-    <div class="nyt-lead-grid">
+    <div class="nyt-lead-grid{" no-text" if not d["sections"] else ""}">
       {self.slideshow(lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
-      <div class="nyt-text">
-{text}      </div>
+      {text_html}
     </div>
   </div>
 
