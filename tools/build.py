@@ -235,8 +235,8 @@ class Site:
             bh = d[2] * k
             dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}"><title>{html.escape(name)}</title>'
                      f'<g class="g-bar"><rect x="{x - 8:.1f}" y="{y - bh / 2:.1f}" width="16" height="{bh:.1f}" fill="url(#g-grad)"/>'
-                     f'<text class="g-v" x="{x:.1f}" y="{y - bh / 2 - 10:.1f}" text-anchor="middle">{d[3]}</text>'
-                     f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 20:.1f}" text-anchor="middle">{d[4]}</text></g>'
+                     f'<text class="g-v" x="{x:.1f}" y="{y - bh / 2 - 9:.1f}" text-anchor="middle">{d[3]}</text>'
+                     f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 18:.1f}" text-anchor="middle">{d[4]}</text></g>'
                      f'<circle class="g-hit" cx="{x:.1f}" cy="{y:.1f}" r="28"/><circle class="g-c" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/></a>')
         defs = ('<defs><radialGradient id="g-grad" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></radialGradient>'
                 '<linearGradient id="g-leg"><stop offset="0" stop-color="#ededed"/><stop offset=".5" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></linearGradient></defs>')
@@ -252,8 +252,7 @@ class Site:
             f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><i>{d[3]}</i> \u00b7 {d[4]}</span></a></li>'
             for i, ((slug, name), d) in enumerate(zip(PROJECTS, DATA)))
         return (f'<div class="g-head"><span class="nyt-k">The Index</span><h2>Six Projects, One Curve</h2></div>'
-                f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>'
-                f'<p class="g-note">Hover a point to see the value each project creates. Illustrative diagram \u2014 the curve is conceptual, not measured data.</p>')
+                f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>')
 
     def index(self):
         graph = self.graph()
