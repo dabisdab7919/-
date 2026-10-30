@@ -1,0 +1,1 @@
+이 폴더에 사진(jpg, png, webp)을 넣고 update-site를 실행하세요.

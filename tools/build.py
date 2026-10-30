@@ -5,7 +5,7 @@
 
 옵션(테스트용):  --manifest 이미지주소.json   --out 출력폴더
 """
-import argparse, html, json, pathlib, re, shutil
+import argparse, html, json, pathlib, re, shutil, urllib.parse
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 EMAIL = 'dabisdab7919@gmail.com'
@@ -25,6 +25,17 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Noto+Serif+KR:wght@400;600&display=swap">')
 
 VIDEO_EXT = ('.mp4', '.webm', '.mov', '.m4v')
+PHOTO_EXT = ('.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif')
+
+
+def natural(name):
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', name)]
+
+
+def folder_key(kicker):
+    """'Research & Diagram' -> 'research-diagram'"""
+    plain = html.unescape(re.sub(r'<[^>]+>', '', kicker)).lower()
+    return re.sub(r'[^a-z0-9]+', '-', plain).strip('-')
 
 
 def sized(url, w):
@@ -40,21 +51,37 @@ class Site:
             self.manifest = {k: (v['url'] if isinstance(v, dict) else v) for k, v in raw.items()}
 
     # ---- 이미지 ----
+    def photos(self, slug, key):
+        """docs/photos/<프로젝트>/<칸>/ 안의 사진을 파일 이름 순서로 돌려줌"""
+        d = ROOT / 'docs' / 'photos' / slug / key
+        if not d.is_dir():
+            return []
+        files = sorted((p for p in d.iterdir() if p.is_file() and p.suffix.lower() in PHOTO_EXT), key=lambda p: natural(p.name))
+        if files:
+            print(f'  사진 {len(files)}장: photos/{slug}/{key}/')
+        return [f'photos/{slug}/{key}/{p.name}' for p in files]
+
     def base_url(self, h):
         return self.manifest.get(h) or f'https://freight.cargo.site/w/1600/i/{h}/image.jpg'
 
     def img(self, h, alt, active=False, eager=False, border=False):
-        base = self.base_url(h)
-        src, full = sized(base, 1200), sized(base, 2400)
+        local = '/' in h                                   # 'photos/...' 처럼 폴더 경로면 내 사진
+        if local:
+            src = full = urllib.parse.quote(h)
+            label = h.rsplit('/', 1)[-1]
+        else:
+            base = self.base_url(h)
+            src, full = sized(base, 1200), sized(base, 2400)
+            label = h
         a = [f'src="{html.escape(src)}"']
         if full != src:
             a.append(f'data-full="{html.escape(full)}"')
-        a += [f'data-hash="{h}"', f'alt="{html.escape(alt)}"']
+        a += [f'data-hash="{html.escape(label)}"', f'alt="{html.escape(alt)}"']
         if not (active or eager):
             a.append('loading="lazy"')
         cls = ' '.join(c for c, on in (('is-active', active), ('has-border', border)) if on)
         cls = f' class="{cls}"' if cls else ''
-        return f'<img{cls} {" ".join(a)}><span class="ph">{h}</span>'
+        return f'<img{cls} {" ".join(a)}><span class="ph">{html.escape(label)}</span>'
 
     def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=()):
         cls = 'nyt-ss' + (' nyt-wide' if wide else '') + (' nozoom' if nozoom else '')
@@ -136,7 +163,7 @@ class Site:
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(s["images"], alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      {self.slideshow(s["images"] + self.photos(slug, folder_key(s["kicker"])), alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
                         f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
@@ -155,7 +182,7 @@ class Site:
     {deck_html}
     <div class="nyt-by">{d["by"]}</div>
     <div class="nyt-lead-grid{" no-text" if not d["sections"] else ""}">
-      {self.slideshow(lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {self.slideshow(lead["images"] + self.photos(slug, "lead"), lead_alt, autoplay=lead.get("autoplay"), wide=True)}
       {text_html}
     </div>
   </div>
@@ -175,11 +202,13 @@ class Site:
         self.page(f'{slug}.html', f'{name} — {OWNER}', body)
 
     def info(self):
+        f = ROOT / 'data' / 'info.json'
+        d = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'title': OWNER, 'paragraphs': []}
+        paras = ''.join(f'  <p>{p}</p>\n' for p in d.get('paragraphs', []))
         body = f'''<section class="plain">
-  <span class="nyt-k">Info</span>
-  <h1>{OWNER}</h1>
-  <p>홍익대학교 건축학과 학생입니다. 지금까지 진행한 설계 프로젝트를 “Value through Connection”이라는 주제로 정리한 아카이브입니다.</p>
-  <p>연락: <a class="mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
+  <span class="nyt-k">{d.get("kicker", "Info")}</span>
+  <h1>{d.get("title", OWNER)}</h1>
+{paras}  <p>연락: <a class="mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
 </section>'''
         self.page('info.html', f'Info — {OWNER}', body, current='info')
 
@@ -221,5 +250,7 @@ if __name__ == '__main__':
     out = pathlib.Path(a.out)
     if out.resolve() != (ROOT / 'docs').resolve():          # 테스트 출력: 자산 복사
         shutil.copytree(ROOT / 'docs' / 'assets', out / 'assets', dirs_exist_ok=True)
+        if (ROOT / 'docs' / 'photos').exists():
+            shutil.copytree(ROOT / 'docs' / 'photos', out / 'photos', dirs_exist_ok=True)
     made = Site(a.manifest, out).build()
     print('만든 페이지:', ', '.join(['index', 'info'] + made), '| 준비 중:', ', '.join(s for s, _ in PROJECTS if s not in made) or '없음')

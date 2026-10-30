@@ -10,6 +10,16 @@ Cargo 없이 어디서나 열리는 **정적 웹사이트**입니다. 완성된 
 - **GitHub Pages**: 저장소 Settings → Pages → Branch 를 선택하고 폴더를 `/docs` 로 지정.
 - **Netlify / Vercel / Cloudflare Pages**: `docs` 폴더를 통째로 끌어다 놓기(또는 Publish directory = `docs`).
 
+## 내가 직접 고치기 (사진 · 글)
+**사진 추가** — `docs/photos/<프로젝트>/<칸>/` 폴더에 사진(jpg, png, webp)을 넣습니다.
+(예: `docs/photos/communicate/drawings/` = Communicating House의 Drawings 칸, `lead` = 맨 위 큰 슬라이드쇼)
+폴더 안 사진은 파일 이름 순서(1.jpg, 2.jpg, 10.jpg …)로 슬라이드쇼 맨 뒤에 붙습니다. 가로 2400px 이하, 2MB 이하 jpg를 권장합니다.
+
+**반영하기** — 윈도우는 `update-site.bat`, 맥은 `update-site.command` 를 더블클릭합니다. (Python 설치 필요: https://www.python.org/downloads/)
+그 뒤 `docs/index.html` 을 열어 확인하고, GitHub Desktop 에서 Commit → Push 하면 GitHub에도 올라갑니다.
+
+**글 고치기** — `data/<프로젝트>.json`(프로젝트 글·제목·캡션), `data/info.json`(Info 페이지)을 메모장으로 열어 문구만 바꾸고 다시 `update-site` 를 실행합니다.
+
 ## 폴더
 ```
 docs/                 완성된 사이트 (HTML, CSS, JS, 폰트, 영상)
