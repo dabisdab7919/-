@@ -163,7 +163,7 @@ class Site:
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(s["images"] + self.photos(slug, folder_key(s["kicker"])), alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      {self.slideshow(self.photos(slug, folder_key(s["kicker"])) or s["images"], alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
                         f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
@@ -182,7 +182,7 @@ class Site:
     {deck_html}
     <div class="nyt-by">{d["by"]}</div>
     <div class="nyt-lead-grid{" no-text" if not d["sections"] else ""}">
-      {self.slideshow(lead["images"] + self.photos(slug, "lead"), lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {self.slideshow(self.photos(slug, "lead") or lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
       {text_html}
     </div>
   </div>
