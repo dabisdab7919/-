@@ -64,9 +64,18 @@ main{display:block;padding-top:2rem}
 .g-line{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
 .g-hit{fill:transparent;cursor:pointer}
 .g-c{fill:#fff;stroke:var(--ink);stroke-width:1.6;transition:r .2s,fill .2s;cursor:pointer}
-.g-n{font:700 14px var(--head);fill:var(--ink);font-variant-numeric:tabular-nums}
 .g-ax{font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;fill:var(--sub)}
-.g-dot:hover .g-c,.g-dot:focus .g-c{fill:var(--ink);r:8}
+.g-x{font:400 14px var(--serif);fill:var(--sub);font-variant-numeric:tabular-nums}
+.g-tk{stroke:var(--ink);stroke-width:1}
+.g-leg text{font:italic 400 14px var(--serif);fill:var(--sub)}
+.g-bar{pointer-events:none}
+.g-bar rect{transform-box:fill-box;transform-origin:center;transform:scaleY(0);transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.g-bar text{opacity:0;transition:opacity .3s;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+.g-v{font:italic 400 19px var(--serif);fill:var(--ink)}
+.g-k{font:700 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;fill:var(--sub)}
+.g-dot:hover .g-bar rect,.g-dot:focus-visible .g-bar rect,.g-dot.on .g-bar rect{transform:scaleY(1);transition-duration:.9s;transition-timing-function:cubic-bezier(.22,.61,.36,1)}
+.g-dot:hover .g-bar text,.g-dot:focus-visible .g-bar text,.g-dot.on .g-bar text{opacity:1;transition-duration:.7s}
+.g-dot:hover .g-c,.g-dot:focus-visible .g-c,.g-dot.on .g-c{fill:var(--ink);r:8}
 .g-cols{list-style:none;margin:.4rem 0 0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--ink)}
 .g-cols li{padding:.9rem .9rem 1rem;border-left:1px solid var(--hair)}
 .g-cols li:first-child{border-left:0;padding-left:0}
@@ -76,7 +85,6 @@ main{display:block;padding-top:2rem}
 .g-m{display:block;margin-top:.45rem;font:400 .85rem/1 var(--sans);color:var(--sub)}
 .g-cols a:hover .g-t{text-decoration:underline;text-underline-offset:.18em}
 .g-note{margin:1.2rem 0 0;font:italic 400 .85rem/1.4 var(--serif);color:var(--sub)}
-.g-dot.on .g-c{fill:var(--ink);r:8}
 
 /* ----- 기사형 프로젝트 페이지 ----- */
 .nyt{padding-bottom:1rem}
@@ -170,8 +178,10 @@ main{display:block;padding-top:2rem}
   .site-foot>:last-child{justify-self:start}
   .vtc{font-size:1.15rem}
   .hero-text{padding:0 1rem 1.6rem}
-  .g-n{font-size:26px}
   .g-ax{font-size:20px}
+  .g-x{font-size:22px}
+  .g-leg text{font-size:22px}
+  .g-bar text{display:none}
   .g-c{r:9px}
   .g-cols{grid-template-columns:repeat(2,1fr)}
   .g-cols li{border-left:0;border-top:1px solid var(--hair);padding-left:0}

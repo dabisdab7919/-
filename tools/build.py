@@ -213,31 +213,47 @@ class Site:
         self.page('info.html', f'Info — {OWNER}', body, current='info')
 
     def graph(self):
-        """메인 그래프: 프로젝트 6개를 잇는 신문 차트 스타일(글자는 실제 텍스트라 본문과 같은 서체)."""
-        W, H, L, R, T, B = 1000, 430, 70, 970, 30, 380
-        vals = [.39, .53, 1.0, .81, .63, .67]            # 개념도용 상대 높이(실측 값이 아님)
+        """메인 그래프: 프로젝트 6개를 잇는 신문 차트 스타일. 점에 마우스를 올리면 value creation 막대, 가치 단어, 프로젝트 유형이 나타납니다."""
+        W, H, L, R, T, B = 1000, 460, 70, 970, 40, 390
+        k = (B - T - 40) / 355                              # 기존 그래프(높이 355 = 최고점)를 이 차트 크기로 줄이는 비율
+        # (학기, 점 높이, value creation 막대 높이, 가치 단어, 프로젝트 유형) — 기존 Cargo 그래프의 값
+        DATA = [('2 \u2013 1', 139, 48.95, 'Trend', 'Residence'),
+                ('2 \u2013 2', 189, 82.77, 'Attraction', 'Community Service Center'),
+                ('3 \u2013 1', 355, 99.69, 'Synergy', 'Office'),
+                ('3 \u2013 2', 289, 132.62, 'Cluster', 'Cultural Center'),
+                ('4 \u2013 1', 223, 181.57, 'Commons', 'School Renovation'),
+                ('Graduation', 239, 214.5, 'Sustainability', 'Senior-Residence')]
         step = (R - L) / len(PROJECTS)
-        pts = [(L + (i + .5) * step, B - v * (B - T - 40)) for i, v in enumerate(vals)]
+        pts = [(L + (i + .5) * step, B - d[1] * k) for i, d in enumerate(DATA)]
         line = ' '.join(f'{x:.1f},{y:.1f}' for x, y in pts)
-        grid = ''.join(f'<line class="g-grid" x1="{L}" x2="{R}" y1="{T + k * (B - T) / 4:.1f}" y2="{T + k * (B - T) / 4:.1f}"/>' for k in range(4))
+        grid = ''.join(f'<line class="g-grid" x1="{L}" x2="{R}" y1="{T + j * (B - T) / 5:.1f}" y2="{T + j * (B - T) / 5:.1f}"/>' for j in range(5))
         stems = ''.join(f'<line class="g-stem" x1="{x:.1f}" x2="{x:.1f}" y1="{y:.1f}" y2="{B}"/>' for x, y in pts)
-        dots = ''.join(
-            f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)}"><title>{html.escape(name)}</title>'
-            f'<circle class="g-hit" cx="{x:.1f}" cy="{y:.1f}" r="26"/><circle class="g-c" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/>'
-            f'<text class="g-n" x="{x:.1f}" y="{y - 16:.1f}" text-anchor="middle">{i + 1:02d}</text></a>'
-            for i, ((x, y), (slug, name)) in enumerate(zip(pts, PROJECTS)))
-        svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Six projects plotted along one rising and falling curve" class="g-svg">'
-               f'{grid}<line class="g-base" x1="{L}" x2="{R}" y1="{B}" y2="{B}"/>{stems}'
+        ticks = ''.join(f'<line class="g-tk" x1="{x:.1f}" x2="{x:.1f}" y1="{B}" y2="{B + 6}"/><text class="g-x" x="{x:.1f}" y="{B + 26}" text-anchor="middle">{d[0]}</text>'
+                        for (x, y), d in zip(pts, DATA))
+        dots = ''
+        for i, ((x, y), d, (slug, name)) in enumerate(zip(pts, DATA, PROJECTS)):
+            bh = d[2] * k
+            dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}"><title>{html.escape(name)}</title>'
+                     f'<g class="g-bar"><rect x="{x - 8:.1f}" y="{y - bh / 2:.1f}" width="16" height="{bh:.1f}" fill="url(#g-grad)"/>'
+                     f'<text class="g-v" x="{x:.1f}" y="{y - bh / 2 - 10:.1f}" text-anchor="middle">{d[3]}</text>'
+                     f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 20:.1f}" text-anchor="middle">{d[4]}</text></g>'
+                     f'<circle class="g-hit" cx="{x:.1f}" cy="{y:.1f}" r="28"/><circle class="g-c" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/></a>')
+        defs = ('<defs><radialGradient id="g-grad" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></radialGradient>'
+                '<linearGradient id="g-leg"><stop offset="0" stop-color="#ededed"/><stop offset=".5" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></linearGradient></defs>')
+        legend = (f'<g class="g-leg"><rect x="{L + 14}" y="{T + 10}" width="96" height="14" fill="url(#g-leg)"/>'
+                  f'<text x="{L + 120}" y="{T + 22}">value creation</text></g>')
+        svg = (f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Six projects plotted over time; the curve rises and falls with the scale of value created" class="g-svg">{defs}'
+               f'{grid}<line class="g-base" x1="{L}" x2="{R}" y1="{B}" y2="{B}"/>{ticks}{stems}'
                f'<polygon class="g-area" points="{pts[0][0]:.1f},{B} {line} {pts[-1][0]:.1f},{B}"/>'
-               f'<polyline class="g-line" points="{line}"/>{dots}'
-               f'<text class="g-ax" x="{L}" y="{T - 12}">Value</text>'
-               f'<text class="g-ax" x="{R}" y="{B + 30}" text-anchor="end">Connection \u2192</text></svg>')
+               f'<polyline class="g-line" points="{line}"/>{legend}{dots}'
+               f'<text class="g-ax" x="{L}" y="{T - 14}">Scale</text>'
+               f'<text class="g-ax" x="{R}" y="{B + 50}" text-anchor="end">Time \u2192</text></svg>')
         cols = ''.join(
-            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m">Architecture</span></a></li>'
-            for i, (slug, name) in enumerate(PROJECTS))
+            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><i>{d[3]}</i> \u00b7 {d[4]}</span></a></li>'
+            for i, ((slug, name), d) in enumerate(zip(PROJECTS, DATA)))
         return (f'<div class="g-head"><span class="nyt-k">The Index</span><h2>Six Projects, One Curve</h2></div>'
                 f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>'
-                f'<p class="g-note">Illustrative diagram \u2014 the curve is conceptual, not measured data.</p>')
+                f'<p class="g-note">Hover a point to see the value each project creates. Illustrative diagram \u2014 the curve is conceptual, not measured data.</p>')
 
     def index(self):
         graph = self.graph()
