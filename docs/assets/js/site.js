@@ -11,6 +11,12 @@
     tick(); setInterval(tick, 1000);
   }
 
+  /* ---------- 상단 날짜 (신문처럼 오늘 날짜) ---------- */
+  var dateEl = document.querySelector('[data-date]');
+  if(dateEl){
+    try{ dateEl.textContent = new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'}); }catch(e){}
+  }
+
   /* ---------- 그래프: 아래 목록에 마우스를 올리면 해당 점 강조 ---------- */
   var dots = document.querySelectorAll('.g-dot');
   [].forEach.call(document.querySelectorAll('.g-cols li'), function(li, i){
