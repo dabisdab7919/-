@@ -126,7 +126,7 @@ class Site:
   </div>
   <div class="head-row2">
     <a class="head-link" href="info.html"{head_cur('info')}>Info</a>
-    <span class="head-link" data-date>Hongik University</span>
+    <span class="head-link">2026</span>
   </div>
 </header>
 <main id="main" class="wrap">
