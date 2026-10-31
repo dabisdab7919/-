@@ -126,7 +126,7 @@ class Site:
   </div>
   <div class="head-row2">
     <a class="head-link" href="info.html"{head_cur('info')}>Info</a>
-    <a class="head-link" href="index.html#projects">Architecture portfolio</a>
+    <a class="head-link" href="index.html#projects">Selected Works</a>
   </div>
 </header>
 <main id="main" class="wrap">
