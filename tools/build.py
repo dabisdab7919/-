@@ -103,7 +103,8 @@ class Site:
         """유튜브 영상: 썸네일 + 재생 버튼을 먼저 보여주고, 누르면 영상으로 바뀝니다."""
         t = html.escape(title, quote=True)
         return (f'<div class="nyt-yt" data-yt="{vid}"><img src="https://i.ytimg.com/vi/{vid}/maxresdefault.jpg" alt="{t}" loading="lazy">'
-                f'<button type="button" class="yt-play" aria-label="영상 재생: {t}"><svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.2 34 .2 34 .2S12.8.2 7.5 1.7a8.5 8.5 0 0 0-6 6C0 13 0 24 0 24s0 11 1.5 16.3a8.5 8.5 0 0 0 6 6C12.8 47.8 34 47.8 34 47.8s21.2 0 26.5-1.5a8.5 8.5 0 0 0 6-6C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></button></div>')
+                f'<button type="button" class="yt-play" aria-label="영상 재생: {t}"><svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.2 34 .2 34 .2S12.8.2 7.5 1.7a8.5 8.5 0 0 0-6 6C0 13 0 24 0 24s0 11 1.5 16.3a8.5 8.5 0 0 0 6 6C12.8 47.8 34 47.8 34 47.8s21.2 0 26.5-1.5a8.5 8.5 0 0 0 6-6C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></button></div>'
+                f'<div class="nyt-cap"><a class="yt-link" href="https://youtu.be/{vid}" target="_blank" rel="noopener">YouTube에서 보기 \u2197</a></div>')
 
     def img_plain(self, h):
         base = self.base_url(h)
