@@ -11,6 +11,22 @@
     tick(); setInterval(tick, 1000);
   }
 
+  /* ---------- 유튜브: 썸네일을 누르면 영상으로 바뀜 ---------- */
+  [].forEach.call(document.querySelectorAll('.nyt-yt'), function(box){
+    var im = box.querySelector('img');
+    if(im) im.addEventListener('error', function(){
+      var id = box.getAttribute('data-yt');
+      if(im.src.indexOf('hqdefault') < 0) im.src = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
+    });
+    box.addEventListener('click', function(){
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + box.getAttribute('data-yt') + '?autoplay=1&rel=0';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+      f.title = im ? im.alt : 'YouTube';
+      box.innerHTML = ''; box.appendChild(f);
+    }, {once:true});
+  });
+
   /* ---------- 그래프: 아래 목록에 마우스를 올리면 해당 점 강조 ---------- */
   var dots = document.querySelectorAll('.g-dot');
   [].forEach.call(document.querySelectorAll('.g-cols li'), function(li, i){

@@ -92,7 +92,7 @@ main{display:block;padding-top:2rem}
 .nyt .nyt-h1,.nyt .nyt-h2{margin:0;font-family:var(--head);font-weight:700;letter-spacing:-.01em;line-height:1.05}
 .nyt .nyt-h1{font-size:clamp(2.6rem,6vw,5rem);margin-bottom:.9rem}
 .nyt .nyt-h2{font-size:1.9rem;margin-bottom:.9rem}
-.nyt .nyt-lead{border-top:1px solid var(--ink);padding-top:1.2rem}
+.nyt .nyt-lead{padding-top:.4rem}
 .nyt .nyt-deck{font:1.35rem/1.3 var(--serif);color:var(--sub);max-width:46rem}
 .nyt .nyt-by{font:.78rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin:1rem 0 1.6rem}
 .nyt .nyt-lead-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:1.6rem;align-items:start}
@@ -110,6 +110,11 @@ main{display:block;padding-top:2rem}
 .nyt .nyt-cols{column-count:2;column-gap:2.4rem}
 .nyt .nyt-cols .nyt-p{break-inside:avoid-column}
 .nyt .nyt-fig{margin-top:2.6rem}
+.nyt-yt{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+.nyt-yt img,.nyt-yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}
+.yt-play{position:absolute;left:50%;top:50%;width:68px;height:48px;margin:-24px 0 0 -34px;padding:0;border:0;background:none;cursor:pointer}
+.yt-play svg{display:block;width:100%;height:100%;opacity:.92;transition:opacity .2s,transform .2s}
+.nyt-yt:hover .yt-play svg{opacity:1;transform:scale(1.08)}
 .nyt .nyt-fig img,.nyt .nyt-fig video{display:block;width:100%;height:auto;background:#f1f1f1}
 
 /* 4단 (카테고리가 4개인 페이지) */
