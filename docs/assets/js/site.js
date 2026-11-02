@@ -94,6 +94,24 @@
     else if(e.key === 'ArrowRight') lbGo(idx + 1);
   });
 
+  /* ---------- 사진 격자 페이지: 스크롤하면 떠오르고, 누르면 크게 열림 ---------- */
+  var gfigs = [].slice.call(document.querySelectorAll('.gfig'));
+  if(gfigs.length){
+    var gimgs = gfigs.map(function(f){ return f.querySelector('img'); });
+    gimgs.forEach(function(im, i){ im.addEventListener('click', function(){ lbOpenAt(gimgs, i, function(){ return ''; }); }); });
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(!e.isIntersecting) return;
+          var col = gfigs.indexOf(e.target) % 3;
+          e.target.style.transitionDelay = (col * 0.12) + 's';
+          e.target.classList.add('in'); io.unobserve(e.target);
+        });
+      }, {threshold: 0.12, rootMargin: '0px 0px -6% 0px'});
+      gfigs.forEach(function(f){ io.observe(f); });
+    } else gfigs.forEach(function(f){ f.classList.add('in'); });
+  }
+
   /* ---------- 슬라이드쇼 ---------- */
   function initSlideshow(ss){
     var frame = ss.querySelector('.ss-frame');
@@ -134,7 +152,7 @@
     }
     ss.querySelector('.ss-prev') && ss.querySelector('.ss-prev').addEventListener('click', function(e){ e.stopPropagation(); show(cur - 1); restart(); });
     ss.querySelector('.ss-next') && ss.querySelector('.ss-next').addEventListener('click', function(e){ e.stopPropagation(); show(cur + 1); restart(); });
-    if(zoom && !ss.classList.contains('nozoom')){
+    if(zoom && zoom.tagName === 'BUTTON' && !ss.classList.contains('nozoom')){
       zoom.addEventListener('click', function(){
         stop();
         lbOpenAt(imgs, cur, function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
