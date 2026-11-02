@@ -1,0 +1,84 @@
+/* ===== NYT 스타일 프로젝트 페이지 (사이트 전체 CSS 맨 아래에 추가) ===== */
+.nyt{--ink:#121212;--sub:#5a5a5a;--hair:#dfdfdf;color:var(--ink);padding-bottom:4rem}
+.nyt *{box-sizing:border-box}
+.nyt .nyt-k{display:block;font:700 .72rem/1 "ROM Variable",system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem}
+.nyt .nyt-h1,.nyt .nyt-h2{font-family:"Cheltenham B T","Georgia",serif;font-weight:700;letter-spacing:-.01em;line-height:1.05}
+.nyt .nyt-h1{font-size:clamp(2.6rem,6vw,5rem);margin-bottom:.9rem}
+.nyt .nyt-h2{font-size:1.9rem;margin-bottom:.9rem}
+.nyt .nyt-lead{border-top:1px solid var(--ink);padding-top:1.2rem}
+.nyt .nyt-deck{font:1.35rem/1.3 "Georgia",serif;color:var(--sub);max-width:46rem}
+.nyt .nyt-by{font:.78rem/1.4 "ROM Variable",system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin:1rem 0 1.6rem}
+.nyt .nyt-lead-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:1.6rem;align-items:start}
+.nyt .nyt-p{font:1.02rem/1.55 "Georgia",serif;margin-bottom:1rem}
+.nyt .nyt-lab{font:700 .72rem/1 "ROM Variable",system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.nyt .nyt-sep{border-top:1px solid var(--hair);padding-top:1rem;margin-top:.4rem}
+.nyt .nyt-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:2.6rem;border-top:1px solid var(--ink)}
+.nyt .nyt-story{padding:1.2rem 1.4rem 0}
+.nyt .nyt-story:first-child{padding-left:0}
+.nyt .nyt-story:last-child{padding-right:0}
+.nyt .nyt-story+.nyt-story{border-left:1px solid var(--hair)}
+.nyt .nyt-cap{font:.86rem/1.4 "Georgia",serif;color:var(--sub);margin-top:.9rem}
+
+/* 썸네일: 커서를 올리면 살짝 커지고, 화살표가 나타나고, 가운데는 돋보기 커서 */
+.nyt .nyt-ss{position:relative}
+.nyt .nyt-ss-in{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;position:relative;z-index:1}
+.nyt .nyt-ss:hover .nyt-ss-in{transform:scale(1.045);z-index:5;box-shadow:0 10px 28px rgba(0,0,0,.22)}
+.nyt .nyt-ss media-item{cursor:zoom-in}
+.nyt .nyt-ss media-item[disable-zoom="true"]{cursor:default}
+.nyt .nyt-ss gallery-slideshow{margin-bottom:0}
+.nyt .nyt-ss gallery-slideshow::part(slideshow-nav){opacity:0;transition:opacity .25s}
+.nyt .nyt-ss:hover gallery-slideshow::part(slideshow-nav){opacity:1}
+
+/* 확대 보기 */
+.nyt-lb:not(.open){display:none !important}
+.nyt-lb{position:fixed;inset:0;z-index:2147483000;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column}
+.nyt-lb.open{display:flex}
+.nyt-lb .lb-stage{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;height:84vh;padding:0 4rem}
+.nyt-lb .lb-stage img{width:100%;height:100%;object-fit:contain}
+.nyt-lb .lb-stage media-item{display:block;width:100%;height:100%}
+.nyt-lb .lb-stage media-item::part(media){width:100%;height:100%;object-fit:contain}
+.nyt-lb .lb-cap{color:#ddd;font:.9rem/1.4 "Georgia",serif;margin-top:.8rem;text-align:center;padding:0 1rem}
+.nyt-lb .lb-count{position:absolute;top:1.1rem;left:1.4rem;color:#aaa;font:.75rem/1 "ROM Variable",system-ui,sans-serif;letter-spacing:.08em}
+.nyt-lb button{position:absolute;background:none;border:0;cursor:pointer;padding:1rem}
+.nyt-lb .lb-close{top:.4rem;right:.6rem;color:#fff;font:2.2rem/1 system-ui,sans-serif}
+.nyt-lb .lb-nav{top:50%;transform:translateY(-50%)}
+.nyt-lb .lb-prev{left:.6rem}.nyt-lb .lb-next{right:.6rem}
+.nyt-lb .lb-nav svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+@media (hover:none){
+  .nyt .nyt-ss gallery-slideshow::part(slideshow-nav){opacity:1}
+  .nyt .nyt-ss:hover .nyt-ss-in{transform:none;box-shadow:none}
+}
+@media (max-width:820px){
+  .nyt .nyt-lead-grid,.nyt .nyt-row{grid-template-columns:1fr}
+  .nyt .nyt-story,.nyt .nyt-story:first-child,.nyt .nyt-story:last-child{padding:1.2rem 0 0}
+  .nyt .nyt-story+.nyt-story{border-left:0;border-top:1px solid var(--hair);margin-top:1.4rem}
+  .nyt .nyt-deck{font-size:1.1rem}
+}
+
+/* 긴 설명 글(2단) / 전체 폭 이미지 */
+.nyt .nyt-notes{margin-top:2.6rem;border-top:1px solid var(--ink);padding-top:1.2rem}
+.nyt .nyt-cols{column-count:2;column-gap:2.4rem}
+.nyt .nyt-cols .nyt-p{break-inside:avoid-column}
+.nyt .nyt-fig{margin-top:2.6rem}
+@media (max-width:820px){.nyt .nyt-cols{column-count:1}}
+
+/* 4단 기사 (카테고리가 4개인 페이지) */
+.nyt .nyt-row.nyt-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.nyt .nyt-row.nyt-4 .nyt-story{padding:1.2rem 1rem 0}
+.nyt .nyt-row.nyt-4 .nyt-story:first-child{padding-left:0}
+.nyt .nyt-row.nyt-4 .nyt-story:last-child{padding-right:0}
+.nyt .nyt-row.nyt-4 .nyt-h2{font-size:1.5rem}
+.nyt .nyt-cols .nyt-lab{display:block}
+@media (max-width:1100px){
+  .nyt .nyt-row.nyt-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:first-child,.nyt .nyt-row.nyt-4 .nyt-story:last-child{padding:1.2rem 1rem 0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd){padding-left:0;border-left:0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding-right:0}
+  .nyt .nyt-row.nyt-4 .nyt-story:nth-child(n+3){border-top:1px solid var(--hair);margin-top:1.4rem}
+}
+@media (max-width:820px){
+  .nyt .nyt-row.nyt-4{grid-template-columns:1fr}
+  .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd),.nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding:1.2rem 0 0;border-left:0}
+  .nyt .nyt-row.nyt-4 .nyt-story+.nyt-story{border-top:1px solid var(--hair);margin-top:1.4rem}
+}
