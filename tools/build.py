@@ -83,11 +83,14 @@ class Site:
         cls = f' class="{cls}"' if cls else ''
         return f'<img{cls} {" ".join(a)}><span class="ph">{html.escape(label)}</span>'
 
-    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=()):
+    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=(), href=None):
         cls = 'nyt-ss' + (' nyt-wide' if wide else '') + (' nozoom' if nozoom else '')
         auto = f' data-autoplay="{autoplay:g}"' if autoplay else ''
         slides = ''.join(self.img(h, alt, active=(i == 0), eager=(wide and i < 2), border=(h in borders)) for i, h in enumerate(images))
-        zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
+        if href:                                            # 눌렀을 때 그리드 페이지로 이동
+            zoom = f'<a class="ss-zoom" href="{html.escape(href)}" aria-label="사진 전체 보기"></a>'
+        else:
+            zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
         nav = ('<button class="ss-nav ss-prev" type="button" aria-label="이전"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>'
                '<button class="ss-nav ss-next" type="button" aria-label="다음"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>'
                '<span class="ss-count"></span>')
@@ -98,6 +101,13 @@ class Site:
         if base.lower().split('?')[0].endswith(VIDEO_EXT):
             return f'<video src="{html.escape(base)}" controls playsinline preload="metadata"></video>'
         return self.img_plain(h)
+
+    def youtube(self, vid, title):
+        """유튜브 영상: 썸네일 + 재생 버튼을 먼저 보여주고, 누르면 영상으로 바뀝니다."""
+        t = html.escape(title, quote=True)
+        return (f'<div class="nyt-yt" data-yt="{vid}"><img src="https://i.ytimg.com/vi/{vid}/maxresdefault.jpg" alt="{t}" loading="lazy">'
+                f'<button type="button" class="yt-play" aria-label="영상 재생: {t}"><svg viewBox="0 0 68 48" aria-hidden="true"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.2 34 .2 34 .2S12.8.2 7.5 1.7a8.5 8.5 0 0 0-6 6C0 13 0 24 0 24s0 11 1.5 16.3a8.5 8.5 0 0 0 6 6C12.8 47.8 34 47.8 34 47.8s21.2 0 26.5-1.5a8.5 8.5 0 0 0 6-6C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#f00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg></button></div>'
+                f'<div class="nyt-cap"><a class="yt-link" href="https://youtu.be/{vid}" target="_blank" rel="noopener">YouTube에서 보기 \u2197</a></div>')
 
     def img_plain(self, h):
         base = self.base_url(h)
@@ -126,7 +136,7 @@ class Site:
   </div>
   <div class="head-row2">
     <a class="head-link" href="info.html"{head_cur('info')}>Info</a>
-    <span class="head-link" data-date>Hongik University</span>
+    <span class="head-link">2026</span>
   </div>
 </header>
 <main id="main" class="wrap">
@@ -145,6 +155,7 @@ class Site:
 
     # ---- 페이지 종류 ----
     def project(self, slug, d):
+        d['_slug'] = slug
         title_plain = re.sub(r'<[^>]+>', '', html.unescape(d['title']))
         lead_alt = title_plain
         text = ''
@@ -161,9 +172,13 @@ class Site:
             cap_attr = f' data-caps="{html.escape(json.dumps(caps, ensure_ascii=False), quote=True)}"' if caps else ''
             cap_text = caps[0] if caps else s['cap']
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
+            imgs = self.photos(slug, folder_key(s["kicker"])) or s["images"]
+            gslug = f'{slug}-{folder_key(s["kicker"])}' if s.get('grid') else None
+            if gslug:
+                self.gridpage(gslug, d, s, imgs, title_plain)
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(self.photos(slug, folder_key(s["kicker"])) or s["images"], alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()), href=(gslug + ".html") if gslug else None)}\n'
                         f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
@@ -174,7 +189,8 @@ class Site:
                 lab = f'<span class="nyt-lab">{p["label"]}</span>' if p['label'] else ''
                 ps += f'      <div class="nyt-p">{lab}{p["text"]}</div>\n'
             notes = f'  <div class="nyt-notes">\n    <span class="nyt-k">{d["notes"]["kicker"]}</span>\n    <div class="nyt-cols">\n{ps}    </div>\n  </div>\n'
-        fig = f'  <div class="nyt-fig">{self.fig(d["fig"]["hash"])}</div>\n' if d.get('fig') else ''
+        fig = (f'  <div class="nyt-fig">{self.youtube(d["fig"]["youtube"], d["title"])}</div>\n' if d.get('fig', {}).get('youtube')
+               else f'  <div class="nyt-fig">{self.fig(d["fig"]["hash"])}</div>\n' if d.get('fig') else '')
         body = f'''<article class="nyt">
   <div class="nyt-lead">
     <span class="nyt-k">{d["kicker"]}</span>
@@ -191,6 +207,33 @@ class Site:
 {stories}  </div>
 {notes}{fig}</article>'''
         self.page(f'{slug}.html', f'{title_plain} — {OWNER}', body, desc=re.sub(r'<[^>]+>', ' ', html.unescape(d['deck'])).strip(), current='')
+
+    def gridpage(self, gslug, d, s, images, title_plain):
+        """사진을 격자로 보여주는 페이지(스크롤하면 하나씩 떠오름)"""
+        parent = gslug.split('-')[0] if False else None
+        kicker = html.unescape(re.sub(r'<[^>]+>', '', s['kicker']))
+        figs = ''
+        for i, h in enumerate(images):
+            if '/' in h:
+                src = full = urllib.parse.quote(h)
+                size = ''
+                try:
+                    from PIL import Image
+                    w, hgt = Image.open(ROOT / 'docs' / h).size
+                    size = f' width="{w}" height="{hgt}"'
+                except Exception:
+                    pass
+            else:
+                base = self.base_url(h)
+                src, full, size = sized(base, 1200), sized(base, 2400), ''
+            figs += (f'    <figure class="gfig"><img src="{html.escape(src)}" data-full="{html.escape(full)}"{size} '
+                     f'alt="{html.escape(title_plain)} — {html.escape(kicker)} {i + 1}" loading="lazy"></figure>\n')
+        back = d.get('_slug', '')
+        body = (f"<script>document.documentElement.classList.add('js')</script>\n"
+                f'<article class="nyt">\n  <div class="grid-head">\n    <a class="grid-back" href="{back}.html">\u2190 {title_plain}</a>\n'
+                f'    <span class="nyt-k">{html.escape(kicker)}</span>\n    <h1 class="nyt-h1">{s["title"]}</h1>\n  </div>\n'
+                f'  <div class="nyt-grid">\n{figs}  </div>\n</article>')
+        self.page(f'{gslug}.html', f'{title_plain} \u2014 {kicker} \u2014 {OWNER}', body)
 
     def soon(self, slug, name):
         body = f'''<section class="plain">
