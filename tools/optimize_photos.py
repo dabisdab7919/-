@@ -3,6 +3,7 @@
 
     python3 tools/optimize_photos.py
 
+- 배경이 투명한 PNG는 흰색 배경으로 채웁니다.
 - 휴대폰 사진의 회전 정보를 반영해 똑바로 세웁니다.
 - 긴 변이 2400px보다 크면 2400px로 줄입니다.
 - 사진처럼 색이 많은 PNG는 JPG로 바꾸고, 도면처럼 단순한 PNG는 색 수를 줄입니다.
@@ -53,6 +54,11 @@ def optimize(f):
         im = im.resize((round(im.width * r), round(im.height * r)), Image.LANCZOS)
         changed = True
     suffix = f.suffix.lower()
+    if im.mode in ('RGBA', 'LA', 'P') and (im.mode == 'P' and 'transparency' in im.info or im.mode != 'P' and im.convert('RGBA').getchannel('A').getextrema()[0] < 255):
+        bg = Image.new('RGBA', im.size, (255, 255, 255, 255))     # 투명한 배경은 흰색으로 채움
+        bg.alpha_composite(im.convert('RGBA'))
+        im = bg.convert('RGB')
+        changed = True
     if suffix == '.png':
         rgb = im.convert('RGB')
         photo = rgb.getcolors(maxcolors=30000) is None
