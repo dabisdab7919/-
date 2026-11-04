@@ -169,11 +169,12 @@ class Site:
             cap_text = caps[0] if caps else s['cap']
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             imgs = self.photos(slug, folder_key(s["kicker"])) or s["images"]
+            cap_html = f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n' if cap_text.strip() else ''
             summary = f'      <p class="nyt-sum">{s["summary"]}</p>\n' if s.get('summary') else ''
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
                         f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
-                        f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n{summary}    </div>\n')
+                        f'{cap_html}{summary}    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
@@ -273,7 +274,7 @@ class Site:
   <div class="hero-text">
     <span class="nyt-k">Design Vision</span>
     <h1 class="vtc-h">Value through Connection</h1>
-    <p class="vtc">Across six projects, I <span class="vc-u">connect</span> people, programs and places to design spaces whose worth can be felt \u2014 and measured. I read architecture through the lens of <span class="vc-u">valuation</span>, where design logic meets the <span class="vc-u">quantifiable worth</span> of space.</p>
+    <p class="vtc">I <span class="vc-u">connect</span> people, programs and places to design spaces whose worth can be <span class="vc-u">felt and measured</span>.</p>
     <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
   </div>
 </section>

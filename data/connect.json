@@ -36,7 +36,7 @@
  ],
  "stories": [
   {
-   "kicker": "Research &amp; Diagram",
+   "kicker": "Research",
    "title": "Reading the Student Neighborhood",
    "cap": "&nbsp; 1. 수직 동선 공간 강조 &nbsp; 2. 수직 동선 공간 연결 &nbsp;3. 쪼개짐",
    "images": [
@@ -50,7 +50,7 @@
   {
    "kicker": "Drawings",
    "title": "Stacked Lounges, Drawn",
-   "cap": "설계 도면.",
+   "cap": "",
    "images": [
     "U3190005022837434123313471878910",
     "I3190005022855880867387181430526",
@@ -70,7 +70,7 @@
   {
    "kicker": "Model",
    "title": "A Pixelated Tower, Modeled",
-   "cap": "건축 모형.",
+   "cap": "",
    "images": [
     "R3126017359963674720853046130430",
     "T3126017359982121464926755682046",

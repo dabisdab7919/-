@@ -30,8 +30,8 @@
  ],
  "stories": [
   {
-   "kicker": "Diagram",
-   "title": "The Idea, Diagrammed",
+   "kicker": "Concept",
+   "title": "The Idea Behind the House",
    "cap": "공유 공간의 분류.",
    "images": [
     "F3156070062630100738307604936446"
@@ -42,7 +42,7 @@
   {
    "kicker": "Drawings",
    "title": "The House, Line by Line",
-   "cap": "설계 도면.",
+   "cap": "",
    "images": [
     "N3189912311475521274993971885822",
     "P3189912311364840810551714576126",
@@ -57,7 +57,7 @@
   {
    "kicker": "Model",
    "title": "Mass, Seen in the Round",
-   "cap": "건축 모형.",
+   "cap": "",
    "images": [
     "B3156067342344092420581156779774",
     "Y3156067342380985908728575883006",

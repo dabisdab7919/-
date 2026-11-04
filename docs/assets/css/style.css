@@ -47,7 +47,7 @@ main{display:block;padding-top:2rem}
 .hero::after{background:linear-gradient(90deg,rgba(255,255,255,.88) 0,rgba(255,255,255,.72) 45%,rgba(255,255,255,.25) 100%)}
 .hero-text{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 3.2rem;max-width:56rem}
 .hero-text .nyt-k{display:block;font:400 .72rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem;padding-top:.7rem;border-top:1px solid var(--ink);width:100%}
-.vtc-h{margin:0 0 1rem;font:700 clamp(2.8rem,7vw,5.6rem)/1.02 var(--head);letter-spacing:-.015em;color:var(--ink)}
+.vtc-h{margin:0 0 1rem;font:400 clamp(2.8rem,7vw,5.6rem)/1.02 var(--head);letter-spacing:-.015em;color:var(--ink)}
 .vtc{font:400 1.7rem/1.4 var(--serif);color:var(--ink);margin:0 0 1.1rem;max-width:44rem}
 .hero-text .by{font:400 .85rem/1 var(--sans);color:var(--sub)}
 .vc-u{display:inline;background-image:linear-gradient(currentColor,currentColor);background-position:0 1.12em;background-repeat:no-repeat;background-size:100% 1px;transition:background-size .3s}
@@ -224,3 +224,7 @@ main{display:block;padding-top:2rem}
 .nyt .nyt-fig .nyt-cap{margin-top:.6rem}
 .yt-link{color:var(--sub);text-decoration:underline;text-underline-offset:.18em}
 .yt-link:hover{color:var(--ink)}
+
+/* 한글은 단어(띄어쓰기) 단위로 줄바꿈 */
+.nyt,.plain,.hero-text{word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+.nyt .nyt-h1,.nyt .nyt-h2,.vtc-h{text-wrap:balance}
