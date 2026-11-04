@@ -37,7 +37,7 @@
   });
 
   /* ---------- 확대 보기 ---------- */
-  var lb, stage, lbCount, lbCap, list = [], idx = 0, lbOpen = false;
+  var lb, stage, thumbs, lbCount, lbCap, built = null, list = [], idx = 0, lbOpen = false;
 
   function buildLB(){
     if(lb) return;
@@ -47,11 +47,12 @@
       '<button class="lb-nav lb-prev" aria-label="이전"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>' +
       '<div class="lb-stage"></div>' +
       '<button class="lb-nav lb-next" aria-label="다음"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>' +
-      '<div class="lb-cap"></div>';
+      '<div class="lb-cap"></div><div class="lb-thumbs"></div>';
     document.body.appendChild(lb);
-    stage = lb.querySelector('.lb-stage'); lbCount = lb.querySelector('.lb-count'); lbCap = lb.querySelector('.lb-cap');
+    thumbs = lb.querySelector('.lb-thumbs'); stage = lb.querySelector('.lb-stage'); lbCount = lb.querySelector('.lb-count'); lbCap = lb.querySelector('.lb-cap');
     lb.addEventListener('click', function(e){
       var t = e.target;
+      var th = t.closest('.lb-th'); if(th) return lbGo(+th.getAttribute('data-i'));
       if(t.closest('.lb-prev')) return lbGo(idx - 1);
       if(t.closest('.lb-next')) return lbGo(idx + 1);
       if(t.closest('.lb-close') || t === lb || t === stage) lbClose();
@@ -75,6 +76,16 @@
     lbCount.textContent = (idx + 1) + ' / ' + list.imgs.length;
     lbCap.textContent = (list.capFn ? list.capFn(idx) : list.cap) || '';
     lb.classList.toggle('single', list.imgs.length < 2);
+    if(built !== list.imgs){                                   /* 오른쪽 썸네일 목록 (슬라이드쇼가 바뀔 때만 다시 만듦) */
+      built = list.imgs; thumbs.innerHTML = '';
+      list.imgs.forEach(function(src, i){
+        var b = document.createElement('button'), ti = document.createElement('img');
+        b.type = 'button'; b.className = 'lb-th'; b.setAttribute('data-i', i); b.setAttribute('aria-label', (i + 1) + '번째 사진');
+        ti.src = src.currentSrc || src.src; ti.alt = ''; b.appendChild(ti); thumbs.appendChild(b);
+      });
+    }
+    [].forEach.call(thumbs.children, function(b, i){ b.classList.toggle('on', i === idx); });
+    var cur = thumbs.children[idx]; if(cur && cur.scrollIntoView) cur.scrollIntoView({block:'nearest', inline:'nearest'});
   }
   function lbGo(n){ idx = (n + list.imgs.length) % list.imgs.length; lbShow(); if(list.sync) list.sync(idx); }
   function lbOpenAt(imgs, i, capFn, sync){
@@ -93,24 +104,6 @@
     else if(e.key === 'ArrowLeft') lbGo(idx - 1);
     else if(e.key === 'ArrowRight') lbGo(idx + 1);
   });
-
-  /* ---------- 사진 격자 페이지: 스크롤하면 떠오르고, 누르면 크게 열림 ---------- */
-  var gfigs = [].slice.call(document.querySelectorAll('.gfig'));
-  if(gfigs.length){
-    var gimgs = gfigs.map(function(f){ return f.querySelector('img'); });
-    gimgs.forEach(function(im, i){ im.addEventListener('click', function(){ lbOpenAt(gimgs, i, function(){ return ''; }); }); });
-    if('IntersectionObserver' in window){
-      var io = new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          if(!e.isIntersecting) return;
-          var col = gfigs.indexOf(e.target) % 3;
-          e.target.style.transitionDelay = (col * 0.12) + 's';
-          e.target.classList.add('in'); io.unobserve(e.target);
-        });
-      }, {threshold: 0.12, rootMargin: '0px 0px -6% 0px'});
-      gfigs.forEach(function(f){ io.observe(f); });
-    } else gfigs.forEach(function(f){ f.classList.add('in'); });
-  }
 
   /* ---------- 슬라이드쇼 ---------- */
   function initSlideshow(ss){
@@ -152,7 +145,7 @@
     }
     ss.querySelector('.ss-prev') && ss.querySelector('.ss-prev').addEventListener('click', function(e){ e.stopPropagation(); show(cur - 1); restart(); });
     ss.querySelector('.ss-next') && ss.querySelector('.ss-next').addEventListener('click', function(e){ e.stopPropagation(); show(cur + 1); restart(); });
-    if(zoom && zoom.tagName === 'BUTTON' && !ss.classList.contains('nozoom')){
+    if(zoom && !ss.classList.contains('nozoom')){
       zoom.addEventListener('click', function(){
         stop();
         lbOpenAt(imgs, cur, function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });

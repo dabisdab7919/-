@@ -83,14 +83,11 @@ class Site:
         cls = f' class="{cls}"' if cls else ''
         return f'<img{cls} {" ".join(a)}><span class="ph">{html.escape(label)}</span>'
 
-    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=(), href=None):
+    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=()):
         cls = 'nyt-ss' + (' nyt-wide' if wide else '') + (' nozoom' if nozoom else '')
         auto = f' data-autoplay="{autoplay:g}"' if autoplay else ''
         slides = ''.join(self.img(h, alt, active=(i == 0), eager=(wide and i < 2), border=(h in borders)) for i, h in enumerate(images))
-        if href:                                            # 눌렀을 때 그리드 페이지로 이동
-            zoom = f'<a class="ss-zoom" href="{html.escape(href)}" aria-label="사진 전체 보기"></a>'
-        else:
-            zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
+        zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
         nav = ('<button class="ss-nav ss-prev" type="button" aria-label="이전"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>'
                '<button class="ss-nav ss-next" type="button" aria-label="다음"><svg viewBox="0 0 24 24"><path d="M9 4l8 8-8 8"/></svg></button>'
                '<span class="ss-count"></span>')
@@ -155,7 +152,6 @@ class Site:
 
     # ---- 페이지 종류 ----
     def project(self, slug, d):
-        d['_slug'] = slug
         title_plain = re.sub(r'<[^>]+>', '', html.unescape(d['title']))
         lead_alt = title_plain
         text = ''
@@ -173,13 +169,11 @@ class Site:
             cap_text = caps[0] if caps else s['cap']
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             imgs = self.photos(slug, folder_key(s["kicker"])) or s["images"]
-            gslug = f'{slug}-{folder_key(s["kicker"])}' if s.get('grid') else None
-            if gslug:
-                self.gridpage(gslug, d, s, imgs, title_plain)
+            summary = f'      <p class="nyt-sum">{s["summary"]}</p>\n' if s.get('summary') else ''
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()), href=(gslug + ".html") if gslug else None)}\n'
-                        f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n    </div>\n')
+                        f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n{summary}    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
@@ -207,33 +201,6 @@ class Site:
 {stories}  </div>
 {notes}{fig}</article>'''
         self.page(f'{slug}.html', f'{title_plain} — {OWNER}', body, desc=re.sub(r'<[^>]+>', ' ', html.unescape(d['deck'])).strip(), current='')
-
-    def gridpage(self, gslug, d, s, images, title_plain):
-        """사진을 격자로 보여주는 페이지(스크롤하면 하나씩 떠오름)"""
-        parent = gslug.split('-')[0] if False else None
-        kicker = html.unescape(re.sub(r'<[^>]+>', '', s['kicker']))
-        figs = ''
-        for i, h in enumerate(images):
-            if '/' in h:
-                src = full = urllib.parse.quote(h)
-                size = ''
-                try:
-                    from PIL import Image
-                    w, hgt = Image.open(ROOT / 'docs' / h).size
-                    size = f' width="{w}" height="{hgt}"'
-                except Exception:
-                    pass
-            else:
-                base = self.base_url(h)
-                src, full, size = sized(base, 1200), sized(base, 2400), ''
-            figs += (f'    <figure class="gfig"><img src="{html.escape(src)}" data-full="{html.escape(full)}"{size} '
-                     f'alt="{html.escape(title_plain)} — {html.escape(kicker)} {i + 1}" loading="lazy"></figure>\n')
-        back = d.get('_slug', '')
-        body = (f"<script>document.documentElement.classList.add('js')</script>\n"
-                f'<article class="nyt">\n  <div class="grid-head">\n    <a class="grid-back" href="{back}.html">\u2190 {title_plain}</a>\n'
-                f'    <span class="nyt-k">{html.escape(kicker)}</span>\n    <h1 class="nyt-h1">{s["title"]}</h1>\n  </div>\n'
-                f'  <div class="nyt-grid">\n{figs}  </div>\n</article>')
-        self.page(f'{gslug}.html', f'{title_plain} \u2014 {kicker} \u2014 {OWNER}', body)
 
     def soon(self, slug, name):
         body = f'''<section class="plain">
@@ -294,7 +261,7 @@ class Site:
         cols = ''.join(
             f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><i>{d[3]}</i> \u00b7 {d[4]}</span></a></li>'
             for i, ((slug, name), d) in enumerate(zip(PROJECTS, DATA)))
-        return (f'<div class="g-head"><span class="nyt-k">The Index</span><h2>Six Projects, One Curve</h2></div>'
+        return (f'<div class="g-head"><span class="nyt-k">Value Creation</span><h2>My Project Timeline</h2></div>'
                 f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>')
 
     def index(self):
@@ -304,9 +271,9 @@ class Site:
     <source src="assets/video/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-text">
-    <span class="nyt-k">An Architectural Archive</span>
+    <span class="nyt-k">Design Vision</span>
     <h1 class="vtc-h">Value through Connection</h1>
-    <p class="vtc">An architectural archive <span class="vc-u">reinterpreted</span> through the lens of <span class="vc-u">valuation</span>\u2014where design logic meets the <span class="vc-u">quantifiable worth</span> of space.</p>
+    <p class="vtc">Across six projects, I <span class="vc-u">connect</span> people, programs and places to design spaces whose worth can be felt \u2014 and measured. I read architecture through the lens of <span class="vc-u">valuation</span>, where design logic meets the <span class="vc-u">quantifiable worth</span> of space.</p>
     <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
   </div>
 </section>
