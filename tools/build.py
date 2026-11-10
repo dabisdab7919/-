@@ -262,7 +262,7 @@ class Site:
                f'<text class="g-ax" x="{L}" y="{T - 14}">Scale</text>'
                f'<text class="g-ax" x="{R}" y="{B + 50}" text-anchor="end">Time \u2192</text></svg>')
         cols = ''.join(
-            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><i>{d[3]}</i> \u00b7 {d[4]}</span></a></li>'
+            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><span class="g-nw"><i>{d[3]}</i> \u00b7</span> <span class="g-ty">{d[4].replace("-", "\u2011")}</span></span></a></li>'
             for i, ((slug, name), d) in enumerate(zip(PROJECTS, DATA)))
         return (f'<div class="g-head"><span class="nyt-k">Value Creation</span><h2>My Project Timeline</h2></div>'
                 f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>')

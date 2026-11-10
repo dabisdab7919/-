@@ -236,3 +236,6 @@ main{display:block;padding-top:2rem}
 .nyt-facts{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:1.1rem;row-gap:.5rem;margin:.2rem 0 0}
 .nyt-facts dt{font:700 .78rem/1.5 var(--sans);letter-spacing:.04em;color:var(--sub);white-space:nowrap}
 .nyt-facts dd{margin:0;font:400 .98rem/1.5 var(--serif);font-variant-numeric:tabular-nums}
+
+.g-ty{display:inline-block}   /* 프로젝트 유형은 한 덩어리로 줄바꿈 */
+.g-nw{white-space:nowrap}
