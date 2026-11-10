@@ -228,3 +228,11 @@ main{display:block;padding-top:2rem}
 /* 한글은 단어(띄어쓰기) 단위로 줄바꿈 */
 .nyt,.plain,.hero-text{word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
 .nyt .nyt-h1,.nyt .nyt-h2,.vtc-h{text-wrap:balance}
+
+/* 본문은 좌우를 맞춤 (글자 사이로 여백을 나눠 줄마다 간격 차이를 줄임) */
+.nyt .nyt-p,.nyt .nyt-sum{text-align:justify;word-break:normal;overflow-wrap:break-word;hyphens:none}   /* 글자 단위로 줄을 바꿔야 줄마다 간격이 고르게 나뉨 */
+.nyt .nyt-deck,.nyt .nyt-cap{text-align:left}
+/* 건축개요 */
+.nyt-facts{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:1.1rem;row-gap:.5rem;margin:.2rem 0 0}
+.nyt-facts dt{font:700 .78rem/1.5 var(--sans);letter-spacing:.04em;color:var(--sub);white-space:nowrap}
+.nyt-facts dd{margin:0;font:400 .98rem/1.5 var(--serif);font-variant-numeric:tabular-nums}
