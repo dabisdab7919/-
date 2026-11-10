@@ -161,7 +161,9 @@ class Site:
             for p in sec['paragraphs']:
                 text += f'      <div class="nyt-p">{p}</div>\n'
         lead = d['lead']
-        text_html = f'<div class="nyt-text">\n{text}      </div>' if d['sections'] else ''
+        rows = ''.join(f'        <dt>{f["label"]}</dt><dd>{f["value"]}</dd>\n' for f in d.get('facts', []) if f.get('value', '').strip())
+        facts = (f'      <div class="nyt-lab nyt-sep">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n') if rows else ''
+        text_html = f'<div class="nyt-text">\n{text}{facts}      </div>' if (d['sections'] or rows) else ''
         stories = ''
         for s in d['stories']:
             caps = s.get('slide_caps')
@@ -192,7 +194,7 @@ class Site:
     <h1 class="nyt-h1">{d["title"]}</h1>
     {deck_html}
     <div class="nyt-by">{d["by"]}</div>
-    <div class="nyt-lead-grid{" no-text" if not d["sections"] else ""}">
+    <div class="nyt-lead-grid{" no-text" if not (d["sections"] or rows) else ""}">
       {self.slideshow(self.photos(slug, "lead") or lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
       {text_html}
     </div>
