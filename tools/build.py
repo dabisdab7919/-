@@ -99,6 +99,18 @@ class Site:
             return f'<video src="{html.escape(base)}" controls playsinline preload="metadata"></video>'
         return self.img_plain(h)
 
+    def thumbs(self, images, alt):
+        """맨 위 슬라이드쇼 아래의 정사각형 썸네일 5칸. 사진이 더 있으면 마지막 칸에 +N"""
+        if len(images) < 2:
+            return ''
+        cells = ''
+        for i, h in enumerate(images[:5]):
+            src = urllib.parse.quote(h) if '/' in h else sized(self.base_url(h), 600)
+            more = f'<span class="th-more">+{len(images) - 5}</span>' if (i == 4 and len(images) > 5) else ''
+            cells += (f'<button type="button" class="nyt-th" data-i="{i}" aria-label="{html.escape(alt)} {i + 1}번째 사진 크게 보기">'
+                      f'<img src="{html.escape(src)}" alt="" loading="lazy">{more}</button>')
+        return f'<div class="nyt-thumbs">{cells}</div>'
+
     def youtube(self, vid, title):
         """유튜브 영상: 썸네일 + 재생 버튼을 먼저 보여주고, 누르면 영상으로 바뀝니다."""
         t = html.escape(title, quote=True)
@@ -156,14 +168,19 @@ class Site:
         lead_alt = title_plain
         text = ''
         for i, sec in enumerate(d['sections']):
+            text += f'      <div class="nyt-sec{" nyt-sep" if i else ""}">\n'
             if sec['label']:
-                text += f'      <div class="nyt-lab{" nyt-sep" if i else ""}">{sec["label"]}</div>\n'
+                text += f'      <div class="nyt-lab">{sec["label"]}</div>\n'
             for p in sec['paragraphs']:
                 text += f'      <div class="nyt-p">{p}</div>\n'
+            text += '      </div>\n'
         lead = d['lead']
         rows = ''.join(f'        <dt>{f["label"]}</dt><dd>{f["value"]}</dd>\n' for f in d.get('facts', []) if f.get('value', '').strip())
-        facts = (f'      <div class="nyt-lab nyt-sep">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n') if rows else ''
-        text_html = f'<div class="nyt-text">\n{text}{facts}      </div>' if (d['sections'] or rows) else ''
+        desc_html = f'<div class="nyt-desc">\n{text}      </div>' if d['sections'] else ''
+        facts_html = (f'<div class="nyt-facts-box">\n      <div class="nyt-lab">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n    </div>') if rows else ''
+        lead_imgs = self.photos(slug, "lead") or lead["images"]
+        thumbs_html = self.thumbs(lead_imgs, lead_alt)
+        text_html = desc_html + ('\n      ' + facts_html if facts_html else '')
         stories = ''
         for s in d['stories']:
             caps = s.get('slide_caps')
@@ -195,7 +212,8 @@ class Site:
     {deck_html}
     <div class="nyt-by">{d["by"]}</div>
     <div class="nyt-lead-grid{" no-text" if not (d["sections"] or rows) else ""}">
-      {self.slideshow(self.photos(slug, "lead") or lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {self.slideshow(lead_imgs, lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {thumbs_html}
       {text_html}
     </div>
   </div>

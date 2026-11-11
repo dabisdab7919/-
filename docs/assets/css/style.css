@@ -95,8 +95,16 @@ main{display:block;padding-top:2rem}
 .nyt .nyt-lead{padding-top:.4rem}
 .nyt .nyt-deck{font:1.35rem/1.3 var(--serif);color:var(--sub);max-width:46rem}
 .nyt .nyt-by{font:.78rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--sub);margin:1rem 0 1.6rem}
-.nyt .nyt-lead-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:1.6rem;align-items:start}
-.nyt .nyt-lead-grid.no-text{grid-template-columns:1fr}
+.nyt .nyt-lead-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);grid-template-areas:"ss desc" "th facts";gap:.9rem 1.6rem;align-items:start}
+.nyt .nyt-lead-grid>.nyt-ss{grid-area:ss;align-self:stretch;min-width:0}
+.nyt .nyt-lead-grid>.nyt-ss::before{content:"";display:block;padding-top:66.667%}   /* 최소 3:2, 설명이 더 길면 그만큼 사진이 늘어남 */
+.nyt .nyt-lead-grid>.nyt-ss .nyt-ss-in{position:absolute;inset:0}
+.nyt .nyt-lead-grid>.nyt-ss .ss-frame{aspect-ratio:auto;height:100%}
+.nyt .nyt-lead-grid>.nyt-ss .ss-frame img{object-fit:cover}
+.nyt .nyt-thumbs{grid-area:th}
+.nyt .nyt-desc{grid-area:desc;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.nyt .nyt-facts-box{grid-area:facts}
+.nyt .nyt-lead-grid.no-text{grid-template-columns:1fr;grid-template-areas:"ss" "th"}
 .nyt .nyt-p{font:1.02rem/1.6 var(--serif);margin:0 0 1rem;word-break:keep-all}
 .nyt .nyt-lab{display:block;font:700 .72rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
 .nyt .nyt-sep{border-top:1px solid var(--hair);padding-top:1rem;margin-top:.4rem}
@@ -199,7 +207,7 @@ main{display:block;padding-top:2rem}
   .g-c{r:9px}
   .g-cols{grid-template-columns:repeat(2,1fr)}
   .g-cols li{border-left:0;border-top:1px solid var(--hair);padding-left:0}
-  .nyt .nyt-lead-grid,.nyt .nyt-lead-grid.no-text,.nyt .nyt-row,.nyt .nyt-row.nyt-4{grid-template-columns:1fr}
+  .nyt .nyt-lead-grid,.nyt .nyt-lead-grid.no-text,.nyt .nyt-row,.nyt .nyt-row.nyt-4{grid-template-columns:1fr;grid-template-areas:"ss" "th" "desc" "facts"}
   .nyt .nyt-story,.nyt .nyt-story:first-child,.nyt .nyt-story:last-child,
   .nyt .nyt-row.nyt-4 .nyt-story,.nyt .nyt-row.nyt-4 .nyt-story:nth-child(odd),.nyt .nyt-row.nyt-4 .nyt-story:nth-child(even){padding:1.2rem 0 0;border-left:0}
   .nyt .nyt-story+.nyt-story,.nyt .nyt-row.nyt-4 .nyt-story+.nyt-story{border-top:1px solid var(--hair);margin-top:1.4rem}
@@ -232,10 +240,21 @@ main{display:block;padding-top:2rem}
 /* 본문은 좌우를 맞춤 (글자 사이로 여백을 나눠 줄마다 간격 차이를 줄임) */
 .nyt .nyt-p,.nyt .nyt-sum{text-align:justify;word-break:normal;overflow-wrap:break-word;hyphens:none}   /* 글자 단위로 줄을 바꿔야 줄마다 간격이 고르게 나뉨 */
 .nyt .nyt-deck,.nyt .nyt-cap{text-align:left}
-/* 건축개요 */
-.nyt-facts{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:1.1rem;row-gap:.5rem;margin:.2rem 0 0}
-.nyt-facts dt{font:700 .78rem/1.5 var(--sans);letter-spacing:.04em;color:var(--sub);white-space:nowrap}
-.nyt-facts dd{margin:0;font:400 .98rem/1.5 var(--serif);font-variant-numeric:tabular-nums}
-
-.g-ty{display:inline-block}   /* 프로젝트 유형은 한 덩어리로 줄바꿈 */
-.g-nw{white-space:nowrap}
+/* 맨 위 사진 아래 정사각형 썸네일 */
+.nyt-thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
+.nyt-th{position:relative;aspect-ratio:1;padding:0;border:0;background:#f1f1f1;cursor:pointer;overflow:hidden;display:block}
+.nyt-th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .25s,transform .4s}
+.nyt-th:hover img{opacity:.85;transform:scale(1.04)}
+.nyt-th:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.th-more{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font:700 1.35rem/1 var(--sans);letter-spacing:.02em}
+/* 설명은 큰 사진 높이에, 건축개요는 썸네일 높이에 맞춤 */
+.nyt-desc .nyt-p{font-size:var(--dfs,.84rem);line-height:1.5;margin:0 0 .6rem}
+.nyt-desc .nyt-sec{display:block}
+.nyt-desc .nyt-lab{margin-bottom:.4rem}
+.nyt-desc .nyt-sep{padding-top:.6rem;margin-top:.1rem}
+.nyt-desc .nyt-lab:first-child{margin-top:0}
+.nyt-facts-box{display:flex;flex-direction:column;align-self:stretch;min-height:0}
+.nyt-facts-box .nyt-lab{margin-bottom:.3rem}
+.nyt-facts{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.9rem;row-gap:0;align-content:space-between;flex:1;margin:0}
+.nyt-facts dt{font:700 .68rem/1.3 var(--sans);letter-spacing:.03em;color:var(--sub);white-space:nowrap;padding:.05rem 0}
+.nyt-facts dd{margin:0;padding:.01rem 0;font:400 .8rem/1.3 var(--serif);font-variant-numeric:tabular-nums}
