@@ -298,7 +298,7 @@ class Site:
     <span class="nyt-k">Design Vision</span>
     <h1 class="vtc-h">Value through Connection</h1>
     <p class="vtc">I design spaces that <span class="vc-u">connect</span> people, programs and places, and <span class="vc-u">create value</span> that can be felt and measured.</p>
-    <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
+    <span class="by">By Dabin Jeong \u00b7 Hongik University, Department of Architecture</span>
   </div>
 </section>
 <section class="graph" id="projects" aria-label="Projects">
