@@ -261,7 +261,8 @@ main{display:block;padding-top:2rem}
 .nyt-facts dd{margin:0;padding:.01rem 0;font:400 .8rem/1.3 var(--serif);font-variant-numeric:tabular-nums}
 
 /* 설명 속 키워드 밑줄 */
-.nyt .kw{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
+.nyt .kw{display:inline;background-image:linear-gradient(currentColor,currentColor);background-position:0 1.12em;background-repeat:no-repeat;background-size:100% 1px;transition:background-size .3s;-webkit-box-decoration-break:clone;box-decoration-break:clone}   /* 메인 화면 문장의 밑줄과 같은 효과 */
+.nyt .kw:hover{background-size:0 1px}
 /* 아래 세 칸(Process·Drawings·Model): 제목 높이가 달라도 사진의 위아래가 같게, 사진은 같은 비율로 잘라서 보여줌 */
 .nyt .nyt-row .nyt-story{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:0;align-content:start}
 .nyt .nyt-row .nyt-story>*{min-width:0}
