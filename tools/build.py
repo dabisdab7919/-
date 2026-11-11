@@ -167,11 +167,14 @@ class Site:
         title_plain = re.sub(r'<[^>]+>', '', html.unescape(d['title']))
         lead_alt = title_plain
         text = ''
+        pending = list(d.get('keywords', []))
         for i, sec in enumerate(d['sections']):
             text += f'      <div class="nyt-sec{" nyt-sep" if i else ""}">\n'
             if sec['label']:
                 text += f'      <div class="nyt-lab">{sec["label"]}</div>\n'
             for p in sec['paragraphs']:
+                for kw in [k for k in pending if k in p]:           # 키워드는 처음 나오는 곳에 밑줄
+                    p = p.replace(kw, f'<span class="kw">{kw}</span>', 1); pending.remove(kw)
                 text += f'      <div class="nyt-p">{p}</div>\n'
             text += '      </div>\n'
         lead = d['lead']
@@ -193,7 +196,7 @@ class Site:
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
                         f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
-                        f'{cap_html}{summary}    </div>\n')
+                        f'      <div class="nyt-rest">\n{cap_html}{summary}      </div>\n    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
@@ -294,7 +297,7 @@ class Site:
   <div class="hero-text">
     <span class="nyt-k">Design Vision</span>
     <h1 class="vtc-h">Value through Connection</h1>
-    <p class="vtc">I <span class="vc-u">connect</span> people, programs and places to design spaces whose worth can be <span class="vc-u">felt and measured</span>.</p>
+    <p class="vtc">I design spaces that <span class="vc-u">connect</span> people, programs and places, and <span class="vc-u">create value</span> that can be felt and measured.</p>
     <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
   </div>
 </section>

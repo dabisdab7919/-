@@ -258,3 +258,16 @@ main{display:block;padding-top:2rem}
 .nyt-facts{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.9rem;row-gap:0;align-content:space-between;flex:1;margin:0}
 .nyt-facts dt{font:700 .68rem/1.3 var(--sans);letter-spacing:.03em;color:var(--sub);white-space:nowrap;padding:.05rem 0}
 .nyt-facts dd{margin:0;padding:.01rem 0;font:400 .8rem/1.3 var(--serif);font-variant-numeric:tabular-nums}
+
+/* 설명 속 키워드 밑줄 */
+.nyt .kw{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
+/* 아래 세 칸(Process·Drawings·Model): 제목 높이가 달라도 사진의 위아래가 같게, 사진은 같은 비율로 잘라서 보여줌 */
+.nyt .nyt-row .nyt-story{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:0;align-content:start}
+.nyt .nyt-row .nyt-story>*{min-width:0}
+.nyt .nyt-row .ss-frame{aspect-ratio:auto;height:clamp(11rem,17vw,17.5rem)}
+.nyt .nyt-row.nyt-4 .ss-frame{height:clamp(9rem,12.5vw,13.5rem)}
+.nyt .nyt-row .ss-frame img{object-fit:cover}
+@media (max-width:900px){
+  .nyt .nyt-row .nyt-story{display:block}
+  .nyt .nyt-row .ss-frame,.nyt .nyt-row.nyt-4 .ss-frame{height:auto;aspect-ratio:4/3}
+}
