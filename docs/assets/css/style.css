@@ -41,11 +41,11 @@ img{max-width:100%}
 main{display:block;padding-top:2rem}
 
 /* ----- 시작 화면 ----- */
-.hero{position:relative;height:calc(100vh - 8.2rem);height:calc(100svh - 8.2rem);min-height:480px;overflow:hidden;background:#e8e8e8}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero{position:relative;aspect-ratio:2.2/1;min-height:27rem;overflow:hidden;background:#e8e8e8}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom}   /* 위쪽을 잘라서 보여줌 */
 .hero::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.4);pointer-events:none}
-.hero::after{background:linear-gradient(90deg,rgba(255,255,255,.88) 0,rgba(255,255,255,.72) 45%,rgba(255,255,255,.25) 100%)}
-.hero-text{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 3.2rem;max-width:56rem}
+.hero::after{background:linear-gradient(90deg,rgba(255,255,255,.9) 0,rgba(255,255,255,.78) 42%,rgba(255,255,255,.2) 100%)}
+.hero-text{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 2.2rem;max-width:56rem}
 .hero-text .nyt-k{display:block;font:400 .72rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem;padding-top:.7rem;border-top:1px solid var(--ink);width:100%}
 .vtc-h{margin:0 0 1rem;font:400 clamp(2.8rem,7vw,5.6rem)/1.02 var(--head);letter-spacing:-.015em;color:var(--ink)}
 .vtc{font:400 1.7rem/1.4 var(--serif);color:var(--ink);margin:0 0 1.1rem;max-width:44rem}
@@ -199,6 +199,7 @@ main{display:block;padding-top:2rem}
   .site-foot{font-size:1rem;grid-template-columns:1fr;gap:.4rem}
   .site-foot>:last-child{justify-self:start}
   .vtc{font-size:1.15rem}
+  .hero{aspect-ratio:auto;min-height:30rem}
   .hero-text{padding:0 1rem 1.6rem}
   .g-ax{font-size:20px}
   .g-x{font-size:22px}
