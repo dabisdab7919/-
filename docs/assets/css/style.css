@@ -41,14 +41,15 @@ img{max-width:100%}
 main{display:block;padding-top:2rem}
 
 /* ----- 시작 화면 ----- */
-.hero{position:relative;aspect-ratio:2.2/1;min-height:27rem;overflow:hidden;background:#e8e8e8}
+.hero{position:relative;display:grid;min-height:27rem;overflow:hidden;background:#e8e8e8}
+.hero::before{content:"";grid-area:1/1;padding-top:45.45%}   /* 가로:세로 약 2.2:1 배너 (aspect-ratio를 쓰면 글이 길 때 가로가 늘어나 옆으로 튀어나옴) */
 .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom}   /* 위쪽을 잘라서 보여줌 */
 .hero::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.4);pointer-events:none}
 .hero::after{background:linear-gradient(90deg,rgba(255,255,255,.9) 0,rgba(255,255,255,.78) 42%,rgba(255,255,255,.2) 100%)}
-.hero-text{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 2.2rem;max-width:56rem}
+.hero-text{grid-area:1/1;position:relative;z-index:1;display:flex;min-width:0;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 2.2rem;max-width:56rem}
 .hero-text .nyt-k{display:block;font:400 .72rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem;padding-top:.7rem;border-top:1px solid var(--ink);width:100%}
-.vtc-h{margin:0 0 1rem;font:400 clamp(2.8rem,7vw,5.6rem)/1.02 var(--head);letter-spacing:-.015em;color:var(--ink)}
-.vtc{font:400 1.7rem/1.4 var(--serif);color:var(--ink);margin:0 0 1.1rem;max-width:44rem}
+.vtc-h{margin:0 0 .9rem;font:400 clamp(2.4rem,5.2vw,4.6rem)/1.02 var(--head);letter-spacing:-.015em;color:var(--ink)}
+.vtc{font:400 clamp(1.15rem,1.9vw,1.5rem)/1.4 var(--serif);color:var(--ink);margin:0 0 1rem;max-width:40rem}
 .hero-text .by{font:400 .85rem/1 var(--sans);color:var(--sub)}
 .vc-u{display:inline;background-image:linear-gradient(currentColor,currentColor);background-position:0 1.12em;background-repeat:no-repeat;background-size:100% 1px;transition:background-size .3s}
 .vc-u:hover{background-size:0 1px}
@@ -199,7 +200,8 @@ main{display:block;padding-top:2rem}
   .site-foot{font-size:1rem;grid-template-columns:1fr;gap:.4rem}
   .site-foot>:last-child{justify-self:start}
   .vtc{font-size:1.15rem}
-  .hero{aspect-ratio:auto;min-height:30rem}
+  .hero{min-height:30rem}
+  .hero::before{display:none}
   .hero-text{padding:0 1rem 1.6rem}
   .g-ax{font-size:20px}
   .g-x{font-size:22px}
