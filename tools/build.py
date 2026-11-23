@@ -237,14 +237,22 @@ class Site:
 
     def info(self):
         f = ROOT / 'data' / 'info.json'
-        d = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'title': OWNER, 'paragraphs': []}
-        paras = ''.join(f'  <p>{p}</p>\n' for p in d.get('paragraphs', []))
-        body = f'''<section class="plain">
+        d = json.loads(f.read_text(encoding='utf-8'))
+        def row(label, inner):
+            return f'    <div class="info-row"><dt class="info-lab">{label}</dt><dd>{inner}</dd></div>\n'
+        rows = ''
+        for c in d.get('contact', []):
+            rows += row(c['label'], f'<a class="mail" href="{c["href"]}">{c["value"]}</a>')
+        head = f'  <div class="info-block">\n   <dl>\n{rows}   </dl>\n  </div>\n' if rows else ''
+        groups = ''
+        for g in d.get('groups', []):
+            items = ''.join(f'<span>{i}</span>' for i in g['items'])
+            groups += f'  <div class="info-block">\n   <dl>\n{row(g["label"], items)}   </dl>\n  </div>\n'
+        body = f'''<article class="info">
   <span class="nyt-k">{d.get("kicker", "Info")}</span>
-  <h1>{d.get("title", OWNER)}</h1>
-{paras}  <p>연락: <a class="mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
-</section>'''
-        self.page('info.html', f'Info — {OWNER}', body, current='info')
+  <h1 class="nyt-h1">{d.get("title", OWNER)}</h1>
+{head}{groups}</article>'''
+        self.page('info.html', f'Info \u2014 {OWNER}', body, current='info')
 
     def graph(self):
         """메인 그래프: 프로젝트 6개를 잇는 신문 차트 스타일. 점에 마우스를 올리면 value creation 막대, 가치 단어, 프로젝트 유형이 나타납니다."""
