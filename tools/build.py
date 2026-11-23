@@ -210,6 +210,7 @@ class Site:
                else f'  <div class="nyt-fig">{self.fig(d["fig"]["hash"])}</div>\n' if d.get('fig') else '')
         body = f'''<article class="nyt">
   <div class="nyt-lead">
+    <a class="nyt-home" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg><span>Home</span></a>
     <span class="nyt-k">{d["kicker"]}</span>
     <h1 class="nyt-h1">{d["title"]}</h1>
     {deck_html}
