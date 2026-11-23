@@ -104,7 +104,7 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .nyt .nyt-lead-grid>.nyt-ss .ss-frame{aspect-ratio:auto;height:100%}
 .nyt .nyt-lead-grid>.nyt-ss .ss-frame img{object-fit:cover}
 .nyt .nyt-thumbs{grid-area:th}
-.nyt .nyt-desc{grid-area:desc;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.nyt .nyt-desc{grid-area:desc;align-self:start;display:flex;flex-direction:column;justify-content:flex-start;min-width:0}
 .nyt .nyt-facts-box{grid-area:facts}
 .nyt .nyt-lead-grid.no-text{grid-template-columns:1fr;grid-template-areas:"ss" "th"}
 .nyt .nyt-p{font:1.02rem/1.6 var(--serif);margin:0 0 1rem;word-break:keep-all}
