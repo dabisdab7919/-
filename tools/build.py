@@ -99,6 +99,18 @@ class Site:
             return f'<video src="{html.escape(base)}" controls playsinline preload="metadata"></video>'
         return self.img_plain(h)
 
+    def thumbs(self, images, alt):
+        """맨 위 슬라이드쇼 아래의 정사각형 썸네일 5칸. 사진이 더 있으면 마지막 칸에 +N"""
+        if len(images) < 2:
+            return ''
+        cells = ''
+        for i, h in enumerate(images[:5]):
+            src = urllib.parse.quote(h) if '/' in h else sized(self.base_url(h), 600)
+            more = f'<span class="th-more">+{len(images) - 5}</span>' if (i == 4 and len(images) > 5) else ''
+            cells += (f'<button type="button" class="nyt-th" data-i="{i}" aria-label="{html.escape(alt)} {i + 1}번째 사진 크게 보기">'
+                      f'<img src="{html.escape(src)}" alt="" loading="lazy">{more}</button>')
+        return f'<div class="nyt-thumbs">{cells}</div>'
+
     def youtube(self, vid, title):
         """유튜브 영상: 썸네일 + 재생 버튼을 먼저 보여주고, 누르면 영상으로 바뀝니다."""
         t = html.escape(title, quote=True)
@@ -155,15 +167,23 @@ class Site:
         title_plain = re.sub(r'<[^>]+>', '', html.unescape(d['title']))
         lead_alt = title_plain
         text = ''
+        pending = list(d.get('keywords', []))
         for i, sec in enumerate(d['sections']):
+            text += f'      <div class="nyt-sec{" nyt-sep" if i else ""}">\n'
             if sec['label']:
-                text += f'      <div class="nyt-lab{" nyt-sep" if i else ""}">{sec["label"]}</div>\n'
+                text += f'      <div class="nyt-lab">{sec["label"]}</div>\n'
             for p in sec['paragraphs']:
+                for kw in [k for k in pending if k in p]:           # 키워드는 처음 나오는 곳에 밑줄
+                    p = p.replace(kw, f'<span class="kw">{kw}</span>', 1); pending.remove(kw)
                 text += f'      <div class="nyt-p">{p}</div>\n'
+            text += '      </div>\n'
         lead = d['lead']
         rows = ''.join(f'        <dt>{f["label"]}</dt><dd>{f["value"]}</dd>\n' for f in d.get('facts', []) if f.get('value', '').strip())
-        facts = (f'      <div class="nyt-lab nyt-sep">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n') if rows else ''
-        text_html = f'<div class="nyt-text">\n{text}{facts}      </div>' if (d['sections'] or rows) else ''
+        desc_html = f'<div class="nyt-desc">\n{text}      </div>' if d['sections'] else ''
+        facts_html = (f'<div class="nyt-facts-box">\n      <div class="nyt-lab">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n    </div>') if rows else ''
+        lead_imgs = self.photos(slug, "lead") or lead["images"]
+        thumbs_html = self.thumbs(lead_imgs, lead_alt)
+        text_html = desc_html + ('\n      ' + facts_html if facts_html else '')
         stories = ''
         for s in d['stories']:
             caps = s.get('slide_caps')
@@ -176,7 +196,7 @@ class Site:
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
                         f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
-                        f'{cap_html}{summary}    </div>\n')
+                        f'      <div class="nyt-rest">\n{cap_html}{summary}      </div>\n    </div>\n')
         deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
@@ -195,7 +215,8 @@ class Site:
     {deck_html}
     <div class="nyt-by">{d["by"]}</div>
     <div class="nyt-lead-grid{" no-text" if not (d["sections"] or rows) else ""}">
-      {self.slideshow(self.photos(slug, "lead") or lead["images"], lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {self.slideshow(lead_imgs, lead_alt, autoplay=lead.get("autoplay"), wide=True)}
+      {thumbs_html}
       {text_html}
     </div>
   </div>
@@ -216,14 +237,22 @@ class Site:
 
     def info(self):
         f = ROOT / 'data' / 'info.json'
-        d = json.loads(f.read_text(encoding='utf-8')) if f.exists() else {'title': OWNER, 'paragraphs': []}
-        paras = ''.join(f'  <p>{p}</p>\n' for p in d.get('paragraphs', []))
-        body = f'''<section class="plain">
+        d = json.loads(f.read_text(encoding='utf-8'))
+        def row(label, inner):
+            return f'    <div class="info-row"><dt class="info-lab">{label}</dt><dd>{inner}</dd></div>\n'
+        rows = ''
+        for c in d.get('contact', []):
+            rows += row(c['label'], f'<a class="mail" href="{c["href"]}">{c["value"]}</a>')
+        head = f'  <div class="info-block">\n   <dl>\n{rows}   </dl>\n  </div>\n' if rows else ''
+        groups = ''
+        for g in d.get('groups', []):
+            items = ''.join(f'<span>{i}</span>' for i in g['items'])
+            groups += f'  <div class="info-block">\n   <dl>\n{row(g["label"], items)}   </dl>\n  </div>\n'
+        body = f'''<article class="info">
   <span class="nyt-k">{d.get("kicker", "Info")}</span>
-  <h1>{d.get("title", OWNER)}</h1>
-{paras}  <p>연락: <a class="mail" href="mailto:{EMAIL}">{EMAIL}</a></p>
-</section>'''
-        self.page('info.html', f'Info — {OWNER}', body, current='info')
+  <h1 class="nyt-h1">{d.get("title", OWNER)}</h1>
+{head}{groups}</article>'''
+        self.page('info.html', f'Info \u2014 {OWNER}', body, current='info')
 
     def graph(self):
         """메인 그래프: 프로젝트 6개를 잇는 신문 차트 스타일. 점에 마우스를 올리면 value creation 막대, 가치 단어, 프로젝트 유형이 나타납니다."""
@@ -262,7 +291,7 @@ class Site:
                f'<text class="g-ax" x="{L}" y="{T - 14}">Scale</text>'
                f'<text class="g-ax" x="{R}" y="{B + 50}" text-anchor="end">Time \u2192</text></svg>')
         cols = ''.join(
-            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><i>{d[3]}</i> \u00b7 {d[4]}</span></a></li>'
+            f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><span class="g-nw"><i>{d[3]}</i> \u00b7</span> <span class="g-ty">{d[4].replace("-", "\u2011")}</span></span></a></li>'
             for i, ((slug, name), d) in enumerate(zip(PROJECTS, DATA)))
         return (f'<div class="g-head"><span class="nyt-k">Value Creation</span><h2>My Project Timeline</h2></div>'
                 f'<div class="g-chart">{svg}</div><ol class="g-cols">{cols}</ol>')
@@ -276,8 +305,8 @@ class Site:
   <div class="hero-text">
     <span class="nyt-k">Design Vision</span>
     <h1 class="vtc-h">Value through Connection</h1>
-    <p class="vtc">I <span class="vc-u">connect</span> people, programs and places to design spaces whose worth can be <span class="vc-u">felt and measured</span>.</p>
-    <span class="by">By Dabin Jeong \u00b7 Hongik University, Architecture</span>
+    <p class="vtc">I design spaces that <span class="vc-u">connect</span> people, programs and places, and <span class="vc-u">create value</span> that can be felt and measured.</p>
+    <span class="by">By Dabin Jeong \u00b7 Hongik University, Department of Architecture</span>
   </div>
 </section>
 <section class="graph" id="projects" aria-label="Projects">

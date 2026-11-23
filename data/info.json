@@ -1,7 +1,36 @@
 {
  "kicker": "Info",
  "title": "Dabin Jeong",
- "paragraphs": [
-  "홍익대학교 건축학과 학생입니다. 지금까지 진행한 설계 프로젝트를 “Value through Connection”이라는 주제로 정리한 아카이브입니다."
+ "contact": [
+  {
+   "label": "Email",
+   "value": "dabisdab7919@gmail.com",
+   "href": "mailto:dabisdab7919@gmail.com"
+  },
+  {
+   "label": "Tel",
+   "value": "010-4845-7919",
+   "href": "tel:01048457919"
+  }
+ ],
+ "groups": [
+  {
+   "label": "Education",
+   "items": [
+    "부산 와석초등학교 졸업(2013)",
+    "부산 화신중학교 졸업(2016)",
+    "울산 현대청운고등학교 졸업(2019)",
+    "홍익대학교 건축학과 졸업(2026)"
+   ]
+  },
+  {
+   "label": "Skills",
+   "items": [
+    "Adobe Photoshop, Illustrator, InDesign",
+    "CAD",
+    "Rhino",
+    "Enscape, D5"
+   ]
+  }
  ]
 }

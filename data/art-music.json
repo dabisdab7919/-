@@ -2,7 +2,7 @@
  "kicker": "Architecture · Project 04",
  "title": "Art &amp; Music Village",
  "deck": "고즈넉한 동네의 분위기를 지키며, 예술을 보여주고 작업하고 쉬는 하나의 마을을 건물 안에 담았다.",
- "by": "By Dabin Jeong · Hongik University, Architecture",
+ "by": "By Dabin Jeong · Hongik University, Department of Architecture",
  "lead": {
   "images": [
    "W3133793362404873221178449786622",
@@ -13,17 +13,18 @@
    "Y3133793362423319965252159338238",
    "Y3133793362497106941546997544702",
    "N3133793362478660197473287993086"
-  ]
+  ],
+  "autoplay": 5.0
  },
  "sections": [
   {
-   "label": "Site",
+   "label": "Site Response",
    "paragraphs": [
     "도봉동은 서울시의 타지역에 비해 발전이 더딘 동네로서 좁은 골목길, 낮은 건물들로 인해 고즈넉하고 옛스러운 분위기를 풍긴다. 최근 서울생활권계획에 따라 문화, 콘텐츠 산업 발전지역으로 지정되어 문화 중심지가 될 것으로 기대된다는 점에서 고즈넉한 동네 분위기와 문화산업중심지로서의 분위기를 조화시킬 수 있는 공간을 만들고자 했다."
    ]
   },
   {
-   "label": "Concept",
+   "label": "Approach",
    "paragraphs": [
     "예술을 보여줌(Show), 작업(Work), 휴식(Rest)의 단계로 나누고 이 세가지의 공간들을 모두 제공하는 하나의 예술마을을 만들고자 했다."
    ]
@@ -49,7 +50,7 @@
    "summary": "좁은 골목과 낮은 건물이 남아 있는 도봉동의 분위기와, 문화산업 발전지역이라는 맥락을 읽었다."
   },
   {
-   "kicker": "Program",
+   "kicker": "Process",
    "title": "Show, Work, Rest",
    "cap": "",
    "images": [
@@ -144,5 +145,13 @@
    "label": "용적률",
    "value": "129% (법정 200% 이하)"
   }
+ ],
+ "keywords": [
+  "고즈넉하고 옛스러운 분위기",
+  "문화산업중심지",
+  "보여줌(Show), 작업(Work), 휴식(Rest)",
+  "예술마을",
+  "개방적인 공간",
+  "예술인들의 작업실"
  ]
 }

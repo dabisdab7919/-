@@ -105,6 +105,23 @@
     else if(e.key === 'ArrowRight') lbGo(idx + 1);
   });
 
+  /* ---------- 맨 위 사진 옆 설명: 큰 사진 높이에 맞춰 글자 크기를 조절 ---------- */
+  function fitDesc(){
+    var desc = document.querySelector('.nyt-lead-grid .nyt-desc'), ss = document.querySelector('.nyt-lead-grid>.nyt-ss');
+    if(!desc || !ss) return;
+    desc.style.removeProperty('--dfs');
+    if(window.matchMedia('(max-width: 900px)').matches) return;
+    var target = ss.getBoundingClientRect().width * 2 / 3, prev = desc.style.alignSelf;
+    desc.style.alignSelf = 'start';
+    for(var fs = 1.0; fs >= 0.78; fs -= 0.02){
+      desc.style.setProperty('--dfs', fs.toFixed(2) + 'rem');
+      if(desc.offsetHeight <= target) break;
+    }
+    desc.style.alignSelf = prev;
+  }
+  fitDesc(); window.addEventListener('resize', fitDesc); window.addEventListener('load', fitDesc);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitDesc);
+
   /* ---------- 슬라이드쇼 ---------- */
   function initSlideshow(ss){
     var frame = ss.querySelector('.ss-frame');
@@ -165,6 +182,12 @@
     ss.addEventListener('mouseleave', function(){ if(!lbOpen) start(); });
     ss.addEventListener('mouseenter', stop);
     document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+    [].forEach.call((ss.parentNode || document).querySelectorAll('.nyt-th'), function(b){          /* 아래 썸네일: 눌러서 확대 */
+      b.addEventListener('click', function(){
+        stop();
+        lbOpenAt(imgs, +b.getAttribute('data-i'), function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
+      });
+    });
     paint(); start();
   }
   [].forEach.call(document.querySelectorAll('.nyt-ss'), initSlideshow);
