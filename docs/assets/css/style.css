@@ -290,9 +290,8 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .info a.mail{border-bottom:1px solid var(--ink)}
 @media (max-width:700px){.info-row{grid-template-columns:1fr;row-gap:.2rem;padding:.35rem 0}}
 
-/* 프로젝트 페이지 맨 위 HOME 링크: 마우스를 올리면 왼쪽 화살표가 나타남 */
+/* 프로젝트 페이지 맨 위 HOME 링크: 왼쪽 화살표가 항상 보이고, 마우스를 올리면 살짝 왼쪽으로 움직임 */
 .nyt-home{display:inline-flex;align-items:center;margin-bottom:.7rem;font:700 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
-.nyt-home svg{width:0;height:.8rem;margin-right:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:width .25s ease,margin-right .25s ease,opacity .25s ease}
-.nyt-home:hover svg,.nyt-home:focus-visible svg{width:.8rem;margin-right:.4rem;opacity:1}
+.nyt-home svg{width:.8rem;height:.8rem;margin-right:.4rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease}
+.nyt-home:hover svg,.nyt-home:focus-visible svg{transform:translateX(-.25rem)}
 .nyt-home:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-@media (hover:none){.nyt-home svg{width:.8rem;margin-right:.4rem;opacity:1}}
