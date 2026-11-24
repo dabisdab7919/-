@@ -281,8 +281,8 @@ class Site:
         dots = ''
         for i, ((x, y), d, (slug, name)) in enumerate(zip(pts, DATA, PROJECTS)):
             bh = d[2] * k
-            area = f'<text class="g-a" x="{x:.1f}" y="{y + bh / 2 + 35:.1f}" text-anchor="middle">연면적 {areas[i]}</text>' if areas[i] else ''
-            dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}{', 연면적 ' + areas[i] if areas[i] else ''}"><title>{html.escape(name)}</title>'
+            area = f'<text class="g-a" x="{x:.1f}" y="{y + bh / 2 + 35:.1f}" text-anchor="middle">{areas[i]}</text>' if areas[i] else ''
+            dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}{', ' + areas[i] if areas[i] else ''}"><title>{html.escape(name)}</title>'
                      f'<g class="g-bar"><rect x="{x - 8:.1f}" y="{y - bh / 2:.1f}" width="16" height="{bh:.1f}" fill="url(#g-grad)"/>'
                      f'<text class="g-v" x="{x:.1f}" y="{y - bh / 2 - 9:.1f}" text-anchor="middle">{d[3]}</text>'
                      f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 18:.1f}" text-anchor="middle">{d[4]}</text>{area}</g>'
