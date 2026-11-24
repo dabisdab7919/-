@@ -119,6 +119,18 @@
     }
     desc.style.alignSelf = prev;
   }
+  function fitFacts(){          /* 건축개요가 썸네일 줄 높이 안에 들어오도록 글자 크기를 조절 */
+    var box = document.querySelector('.nyt-facts-box'), inn = box && box.querySelector('.nyt-facts-in');
+    if(!box) return;
+    box.style.removeProperty('--k');
+    if(window.matchMedia('(max-width: 900px)').matches) return;
+    for(var k = 1.0; k >= 0.6; k -= 0.03){
+      box.style.setProperty('--k', k.toFixed(2));
+      if(inn.scrollHeight <= inn.clientHeight + 1) break;
+    }
+  }
+  fitFacts(); window.addEventListener('resize', fitFacts); window.addEventListener('load', fitFacts);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitFacts);
   fitDesc(); window.addEventListener('resize', fitDesc); window.addEventListener('load', fitDesc);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitDesc);
 

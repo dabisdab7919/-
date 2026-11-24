@@ -1,7 +1,7 @@
 {
  "kicker": "Architecture · Project 05",
  "title": "Hwamyeong Farm Therapy",
- "deck": "오래된 학교 건물을 살려, 노인주거와 정신건강케어센터, 도서관, 도시농업이 어우러지는 화명동의 커먼스.",
+ "deck": "오래된 학교 건물을 살려, 노인주거와 정신건강케어센터,|도서관, 도시농업이 어우러지는 화명동의 커먼스.",
  "by": "By Dabin Jeong · Hongik University, Department of Architecture",
  "lead": {
   "images": [
@@ -22,7 +22,7 @@
    ]
   },
   {
-   "label": "Approach",
+   "label": "Design Approach",
    "paragraphs": [
     "사이트 주변시설과 풍부한 녹지공간의 확대활용, 좋은 공공시설과의 연계를 고려하여 노인주거, 정신건강케어센터, 도서관, 도시농업을 프로그램으로 선정하여 노인과 화명동 주민의 커먼스 공간을 조성하고자 했다. Commons space는 특정 사용자 그룹이나 지역 사회가 공동으로 사용하고, 관리하며, 공유하는 공간으로서 도서관과 도시농업을 통한 지역의 활동적인 공유공간을 제공하고 자연스러운 주변시설들과의 연결을 조성하여 지역시설의 활용도 증진 및 다양한 세대 간 적극적인 소통의 장이 되도록 했다."
    ]
@@ -78,7 +78,7 @@
   }
  ],
  "notes": {
-  "kicker": "On the Process",
+  "kicker": "Giving an Old School a Second Life as a Commons",
   "paragraphs": [
    {
     "label": "Renovation",

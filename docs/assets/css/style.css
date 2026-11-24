@@ -295,3 +295,20 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .nyt-home svg{width:.8rem;height:.8rem;margin-right:.4rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease}
 .nyt-home:hover svg,.nyt-home:focus-visible svg{transform:translateX(-.25rem)}
 .nyt-home:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* 제목 아래 설명: 줄바꿈은 데이터에서 정한 위치에서만 (좁은 화면에서는 자연스럽게 이어짐) */
+.nyt .nyt-deck .dl{display:block}
+@media (max-width:900px){.nyt .nyt-deck .dl{display:inline}}
+/* 메모 헤드라인 */
+.nyt .nyt-nh{font-size:clamp(1.6rem,2.6vw,2.2rem);margin:0 0 1rem;max-width:46rem}
+/* 그래프 호버: 연면적 */
+.g-a{font:400 12px var(--sans);letter-spacing:.02em;fill:var(--sub);font-variant-numeric:tabular-nums}
+/* 건축개요: 높이는 썸네일 줄이 정하고, 내용은 그 안에 딱 맞게 (위 = 썸네일 위, 아래 = 썸네일 아래) */
+@media (min-width:901px){
+  .nyt .nyt-facts-box{position:relative;align-self:stretch;min-height:0;display:block}
+  .nyt .nyt-facts-box .nyt-facts-in{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+}
+.nyt-facts-box .nyt-lab{line-height:1;margin:0 0 .35rem}
+.nyt-facts{flex:1;min-height:0;align-content:space-between}
+.nyt-facts dt{font-size:calc(.68rem * var(--k,1));line-height:1.2;padding:0}
+.nyt-facts dd{font-size:calc(.8rem * var(--k,1));line-height:1.2;padding:0}

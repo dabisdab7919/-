@@ -180,7 +180,7 @@ class Site:
         lead = d['lead']
         rows = ''.join(f'        <dt>{f["label"]}</dt><dd>{f["value"]}</dd>\n' for f in d.get('facts', []) if f.get('value', '').strip())
         desc_html = f'<div class="nyt-desc">\n{text}      </div>' if d['sections'] else ''
-        facts_html = (f'<div class="nyt-facts-box">\n      <div class="nyt-lab">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n    </div>') if rows else ''
+        facts_html = (f'<div class="nyt-facts-box"><div class="nyt-facts-in">\n      <div class="nyt-lab">건축개요</div>\n      <dl class="nyt-facts">\n{rows}      </dl>\n    </div></div>') if rows else ''
         lead_imgs = self.photos(slug, "lead") or lead["images"]
         thumbs_html = self.thumbs(lead_imgs, lead_alt)
         text_html = desc_html + ('\n      ' + facts_html if facts_html else '')
@@ -197,7 +197,8 @@ class Site:
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
                         f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
                         f'      <div class="nyt-rest">\n{cap_html}{summary}      </div>\n    </div>\n')
-        deck_html = f'<div class="nyt-deck">{d["deck"]}</div>' if d.get('deck') else ''
+        deck_lines = [x.strip() for x in d.get('deck', '').split('|') if x.strip()]
+        deck_html = ('<div class="nyt-deck">' + ''.join(f'<span class="dl">{x}</span> ' for x in deck_lines).strip() + '</div>') if deck_lines else ''
         row = 'nyt-row nyt-4' if len(d['stories']) == 4 else 'nyt-row'
         notes = ''
         if d.get('notes'):
@@ -205,7 +206,7 @@ class Site:
             for p in d['notes']['paragraphs']:
                 lab = f'<span class="nyt-lab">{p["label"]}</span>' if p['label'] else ''
                 ps += f'      <div class="nyt-p">{lab}{p["text"]}</div>\n'
-            notes = f'  <div class="nyt-notes">\n    <span class="nyt-k">{d["notes"]["kicker"]}</span>\n    <div class="nyt-cols">\n{ps}    </div>\n  </div>\n'
+            notes = f'  <div class="nyt-notes">\n    <h2 class="nyt-h2 nyt-nh">{d["notes"]["kicker"]}</h2>\n    <div class="nyt-cols">\n{ps}    </div>\n  </div>\n'
         fig = (f'  <div class="nyt-fig">{self.youtube(d["fig"]["youtube"], d["title"])}</div>\n' if d.get('fig', {}).get('youtube')
                else f'  <div class="nyt-fig">{self.fig(d["fig"]["hash"])}</div>\n' if d.get('fig') else '')
         body = f'''<article class="nyt">
@@ -225,7 +226,7 @@ class Site:
   <div class="{row}">
 {stories}  </div>
 {notes}{fig}</article>'''
-        self.page(f'{slug}.html', f'{title_plain} — {OWNER}', body, desc=re.sub(r'<[^>]+>', ' ', html.unescape(d['deck'])).strip(), current='')
+        self.page(f'{slug}.html', f'{title_plain} — {OWNER}', body, desc=' '.join(deck_lines), current='')
 
     def soon(self, slug, name):
         body = f'''<section class="plain">
@@ -266,6 +267,10 @@ class Site:
                 ('3 \u2013 2', 289, 132.62, 'Cluster', 'Cultural Center'),
                 ('4 \u2013 1', 223, 181.57, 'Commons', 'School Renovation'),
                 ('Graduation', 239, 214.5, 'Sustainability', 'Senior-Residence')]
+        areas = []
+        for slug, _ in PROJECTS:
+            fd = json.loads((ROOT / 'data' / f'{slug}.json').read_text(encoding='utf-8')).get('facts', [])
+            areas.append(next((f['value'] for f in fd if f['label'] == '연면적'), ''))
         step = (R - L) / len(PROJECTS)
         pts = [(L + (i + .5) * step, B - d[1] * k) for i, d in enumerate(DATA)]
         line = ' '.join(f'{x:.1f},{y:.1f}' for x, y in pts)
@@ -276,10 +281,11 @@ class Site:
         dots = ''
         for i, ((x, y), d, (slug, name)) in enumerate(zip(pts, DATA, PROJECTS)):
             bh = d[2] * k
-            dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}"><title>{html.escape(name)}</title>'
+            area = f'<text class="g-a" x="{x:.1f}" y="{y + bh / 2 + 35:.1f}" text-anchor="middle">연면적 {areas[i]}</text>' if areas[i] else ''
+            dots += (f'<a href="{slug}.html" class="g-dot" aria-label="{html.escape(name)} \u2014 {d[3]}, {d[4]}{', 연면적 ' + areas[i] if areas[i] else ''}"><title>{html.escape(name)}</title>'
                      f'<g class="g-bar"><rect x="{x - 8:.1f}" y="{y - bh / 2:.1f}" width="16" height="{bh:.1f}" fill="url(#g-grad)"/>'
                      f'<text class="g-v" x="{x:.1f}" y="{y - bh / 2 - 9:.1f}" text-anchor="middle">{d[3]}</text>'
-                     f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 18:.1f}" text-anchor="middle">{d[4]}</text></g>'
+                     f'<text class="g-k" x="{x:.1f}" y="{y + bh / 2 + 18:.1f}" text-anchor="middle">{d[4]}</text>{area}</g>'
                      f'<circle class="g-hit" cx="{x:.1f}" cy="{y:.1f}" r="28"/><circle class="g-c" cx="{x:.1f}" cy="{y:.1f}" r="5.5"/></a>')
         defs = ('<defs><radialGradient id="g-grad" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></radialGradient>'
                 '<linearGradient id="g-leg"><stop offset="0" stop-color="#ededed"/><stop offset=".5" stop-color="#190c09"/><stop offset="1" stop-color="#ededed"/></linearGradient></defs>')
@@ -289,7 +295,7 @@ class Site:
                f'{grid}<line class="g-base" x1="{L}" x2="{R}" y1="{B}" y2="{B}"/>{ticks}{stems}'
                f'<polygon class="g-area" points="{pts[0][0]:.1f},{B} {line} {pts[-1][0]:.1f},{B}"/>'
                f'<polyline class="g-line" points="{line}"/>{legend}{dots}'
-               f'<text class="g-ax" x="{L}" y="{T - 14}">Scale</text>'
+               f'<text class="g-ax" x="{L}" y="{T - 14}">Scale \u2191</text>'
                f'<text class="g-ax" x="{R}" y="{B + 50}" text-anchor="end">Time \u2192</text></svg>')
         cols = ''.join(
             f'<li><a href="{slug}.html"><span class="nyt-k">Project {i + 1:02d}</span><span class="g-t">{html.escape(name)}</span><span class="g-m"><span class="g-nw"><i>{d[3]}</i> \u00b7</span> <span class="g-ty">{d[4].replace("-", "\u2011")}</span></span></a></li>'

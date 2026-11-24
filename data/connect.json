@@ -1,7 +1,7 @@
 {
  "kicker": "Architecture · Project 03",
  "title": "Connect Office",
- "deck": "자취생의 또 다른 집이 되어주는 신세계푸드의 오피스,&nbsp;<br>\n수직 공간을 따라 이어지는 소통.",
+ "deck": "자취생의 또 다른 집이 되어주는 신세계푸드의 오피스,|수직 공간을 따라 이어지는 소통.",
  "by": "By Dabin Jeong · Hongik University, Department of Architecture",
  "lead": {
   "images": [
@@ -22,7 +22,7 @@
    ]
   },
   {
-   "label": "Approach",
+   "label": "Design Approach",
    "paragraphs": [
     "자취생들은 편안하게 퍼블릭 공간을 이용하면서 직원들과 자연스럽게 소통하게 된다. 각 퍼블릭 공간을 운영하기에 적절하고 업무적 이익을 얻을 수 있는 부서를 자취생 공간과 수평적으로 연결해 상호이익을 추구하였다."
    ]
