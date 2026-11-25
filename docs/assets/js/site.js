@@ -124,7 +124,7 @@
     if(!box) return;
     box.style.removeProperty('--k');
     if(window.matchMedia('(max-width: 900px)').matches) return;
-    for(var k = 1.0; k >= 0.6; k -= 0.03){
+    for(var k = 1.0; k >= 0.5; k -= 0.02){
       box.style.setProperty('--k', k.toFixed(2));
       if(inn.scrollHeight <= inn.clientHeight + 1) break;
     }

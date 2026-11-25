@@ -306,9 +306,9 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 /* 건축개요: 높이는 썸네일 줄이 정하고, 내용은 그 안에 딱 맞게 (위 = 썸네일 위, 아래 = 썸네일 아래) */
 @media (min-width:901px){
   .nyt .nyt-facts-box{position:relative;align-self:stretch;min-height:0;display:block}
-  .nyt .nyt-facts-box .nyt-facts-in{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+  .nyt .nyt-facts-box .nyt-facts-in{position:absolute;inset:0;display:flex;flex-direction:column}
 }
-.nyt-facts-box .nyt-lab{line-height:1;margin:0 0 .35rem}
+.nyt-facts-box .nyt-lab{line-height:1.35;margin:-.18rem 0 .3rem}   /* 한글 글자 윗부분이 잘리지 않게 줄 높이를 주고, 위로 당겨 썸네일 윗선에 맞춤 */
 .nyt-facts{flex:1;min-height:0;align-content:space-between}
 .nyt-facts dt{font-size:calc(.68rem * var(--k,1));line-height:1.2;padding:0}
 .nyt-facts dd{font-size:calc(.8rem * var(--k,1));line-height:1.2;padding:0}
