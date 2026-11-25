@@ -160,6 +160,9 @@
 
     var capEl = ss.parentNode.querySelector('.nyt-cap'), caps = null;
     if(capEl && capEl.getAttribute('data-caps')){ try{ caps = JSON.parse(capEl.getAttribute('data-caps')); }catch(e){} }
+    var lbcaps = null;
+    try{ lbcaps = JSON.parse(ss.getAttribute('data-lbcaps') || 'null'); }catch(e){}
+    function lbCapOf(i){ if(lbcaps) return lbcaps[i] || ''; var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }
     function capOf(i){ return caps ? (caps[i] || '') : ((capEl || {}).textContent || ''); }
     function paint(){
       if(count) count.textContent = (cur + 1) + ' / ' + imgs.length;
@@ -177,7 +180,7 @@
     if(zoom && !ss.classList.contains('nozoom')){
       zoom.addEventListener('click', function(){
         stop();
-        lbOpenAt(imgs, cur, function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
+        lbOpenAt(imgs, cur, lbCapOf, function(i){ show(i); });
       });
     }
     var sx = null;
@@ -197,7 +200,7 @@
     [].forEach.call((ss.parentNode || document).querySelectorAll('.nyt-th'), function(b){          /* 아래 썸네일: 눌러서 확대 */
       b.addEventListener('click', function(){
         stop();
-        lbOpenAt(imgs, +b.getAttribute('data-i'), function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
+        lbOpenAt(imgs, +b.getAttribute('data-i'), lbCapOf, function(i){ show(i); });
       });
     });
     paint(); start();

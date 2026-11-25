@@ -83,9 +83,13 @@ class Site:
         cls = f' class="{cls}"' if cls else ''
         return f'<img{cls} {" ".join(a)}><span class="ph">{html.escape(label)}</span>'
 
-    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=()):
+    def slideshow(self, images, alt, autoplay=None, nozoom=False, wide=False, borders=(), lbcaps=None):
         cls = 'nyt-ss' + (' nyt-wide' if wide else '') + (' nozoom' if nozoom else '')
         auto = f' data-autoplay="{autoplay:g}"' if autoplay else ''
+        if lbcaps:
+            if len(lbcaps) != len(images):
+                print(f'  ! 확대 캡션 {len(lbcaps)}개 / 사진 {len(images)}장: 개수가 다릅니다')
+            auto += f' data-lbcaps="{html.escape(json.dumps(lbcaps, ensure_ascii=False), quote=True)}"'
         slides = ''.join(self.img(h, alt, active=(i == 0), eager=(wide and i < 2), border=(h in borders)) for i, h in enumerate(images))
         zoom = '' if nozoom else '<button class="ss-zoom" type="button" aria-label="이미지 크게 보기"></button>'
         nav = ('<button class="ss-nav ss-prev" type="button" aria-label="이전"><svg viewBox="0 0 24 24"><path d="M15 4l-8 8 8 8"/></svg></button>'
@@ -195,7 +199,7 @@ class Site:
             summary = f'      <p class="nyt-sum">{s["summary"]}</p>\n' if s.get('summary') else ''
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
-                        f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()))}\n'
+                        f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()), lbcaps=s.get("lb_caps"))}\n'
                         f'      <div class="nyt-rest">\n{cap_html}{summary}      </div>\n    </div>\n')
         deck_lines = [x.strip() for x in d.get('deck', '').split('|') if x.strip()]
         deck_html = ('<div class="nyt-deck">' + ''.join(f'<span class="dl">{x}</span> ' for x in deck_lines).strip() + '</div>') if deck_lines else ''
