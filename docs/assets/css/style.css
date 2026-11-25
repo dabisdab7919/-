@@ -42,8 +42,8 @@ main{display:block;padding-top:2rem}
 
 /* ----- 시작 화면 ----- */
 .hero{position:relative;display:grid;min-height:27rem;overflow:hidden;background:#e8e8e8}
-.hero::before{content:"";grid-area:1/1;padding-top:42.97%}   /* 가로:세로 약 2.2:1 배너 (aspect-ratio를 쓰면 글이 길 때 가로가 늘어나 옆으로 튀어나옴) */
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}   /* 위쪽을 잘라서 보여줌 */
+.hero::before{content:"";grid-area:1/1;padding-top:45.45%}   /* 가로:세로 약 2.2:1 배너 (aspect-ratio를 쓰면 글이 길 때 가로가 늘어나 옆으로 튀어나옴) */
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center bottom}   /* 위쪽을 잘라서 보여줌 */
 .hero::after{content:"";position:absolute;inset:0;background:rgba(38,38,38,.46);pointer-events:none}   /* 약간 회색빛 레이어 (영상 위에 흰 막을 씌우지 않음) */
 .hero-text{grid-area:1/1;position:relative;z-index:1;display:flex;min-width:0;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:0 2.4rem 2.2rem;max-width:56rem}
 .vtc-h{margin:0 0 .9rem;font:400 clamp(2.4rem,5.2vw,4.6rem)/1.02 var(--head);letter-spacing:-.015em;color:#fff;text-shadow:0 1px 18px rgba(0,0,0,.35)}
