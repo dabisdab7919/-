@@ -119,6 +119,18 @@
     }
     desc.style.alignSelf = prev;
   }
+  function fitFacts(){          /* 건축개요가 썸네일 줄 높이 안에 들어오도록 글자 크기를 조절 */
+    var box = document.querySelector('.nyt-facts-box'), inn = box && box.querySelector('.nyt-facts-in');
+    if(!box) return;
+    box.style.removeProperty('--k');
+    if(window.matchMedia('(max-width: 900px)').matches) return;
+    for(var k = 1.0; k >= 0.5; k -= 0.02){
+      box.style.setProperty('--k', k.toFixed(2));
+      if(inn.scrollHeight <= inn.clientHeight + 1) break;
+    }
+  }
+  fitFacts(); window.addEventListener('resize', fitFacts); window.addEventListener('load', fitFacts);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitFacts);
   fitDesc(); window.addEventListener('resize', fitDesc); window.addEventListener('load', fitDesc);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitDesc);
 
@@ -148,6 +160,9 @@
 
     var capEl = ss.parentNode.querySelector('.nyt-cap'), caps = null;
     if(capEl && capEl.getAttribute('data-caps')){ try{ caps = JSON.parse(capEl.getAttribute('data-caps')); }catch(e){} }
+    var lbcaps = null;
+    try{ lbcaps = JSON.parse(ss.getAttribute('data-lbcaps') || 'null'); }catch(e){}
+    function lbCapOf(i){ if(lbcaps) return lbcaps[i] || ''; var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }
     function capOf(i){ return caps ? (caps[i] || '') : ((capEl || {}).textContent || ''); }
     function paint(){
       if(count) count.textContent = (cur + 1) + ' / ' + imgs.length;
@@ -165,7 +180,7 @@
     if(zoom && !ss.classList.contains('nozoom')){
       zoom.addEventListener('click', function(){
         stop();
-        lbOpenAt(imgs, cur, function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
+        lbOpenAt(imgs, cur, lbCapOf, function(i){ show(i); });
       });
     }
     var sx = null;
@@ -185,7 +200,7 @@
     [].forEach.call((ss.parentNode || document).querySelectorAll('.nyt-th'), function(b){          /* 아래 썸네일: 눌러서 확대 */
       b.addEventListener('click', function(){
         stop();
-        lbOpenAt(imgs, +b.getAttribute('data-i'), function(i){ var t = document.createElement('div'); t.innerHTML = capOf(i); return t.textContent; }, function(i){ show(i); });
+        lbOpenAt(imgs, +b.getAttribute('data-i'), lbCapOf, function(i){ show(i); });
       });
     });
     paint(); start();
