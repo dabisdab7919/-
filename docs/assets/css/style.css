@@ -250,7 +250,7 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .nyt-th:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .th-more{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font:700 1.35rem/1 var(--sans);letter-spacing:.02em}
 /* 설명은 큰 사진 높이에, 건축개요는 썸네일 높이에 맞춤 */
-.nyt-desc .nyt-p{font-size:var(--dfs,.84rem);line-height:1.5;margin:0 0 .6rem}
+.nyt-desc .nyt-p{font-size:.9rem;line-height:1.5;margin:0 0 .6rem}
 .nyt-desc .nyt-sec{display:block}
 .nyt-desc .nyt-lab{margin-bottom:.4rem}
 .nyt-desc .nyt-sep{padding-top:.6rem;margin-top:.1rem}

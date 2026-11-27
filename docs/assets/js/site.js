@@ -105,20 +105,6 @@
     else if(e.key === 'ArrowRight') lbGo(idx + 1);
   });
 
-  /* ---------- 맨 위 사진 옆 설명: 큰 사진 높이에 맞춰 글자 크기를 조절 ---------- */
-  function fitDesc(){
-    var desc = document.querySelector('.nyt-lead-grid .nyt-desc'), ss = document.querySelector('.nyt-lead-grid>.nyt-ss');
-    if(!desc || !ss) return;
-    desc.style.removeProperty('--dfs');
-    if(window.matchMedia('(max-width: 900px)').matches) return;
-    var target = ss.getBoundingClientRect().width * 2 / 3, prev = desc.style.alignSelf;
-    desc.style.alignSelf = 'start';
-    for(var fs = 0.96; fs >= 0.76; fs -= 0.02){
-      desc.style.setProperty('--dfs', fs.toFixed(2) + 'rem');
-      if(desc.offsetHeight <= target) break;
-    }
-    desc.style.alignSelf = prev;
-  }
   function fitFacts(){          /* 건축개요가 썸네일 줄 높이 안에 들어오도록 글자 크기를 조절 */
     var box = document.querySelector('.nyt-facts-box'), inn = box && box.querySelector('.nyt-facts-in');
     if(!box) return;
@@ -131,8 +117,6 @@
   }
   fitFacts(); window.addEventListener('resize', fitFacts); window.addEventListener('load', fitFacts);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitFacts);
-  fitDesc(); window.addEventListener('resize', fitDesc); window.addEventListener('load', fitDesc);
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitDesc);
 
   /* ---------- 슬라이드쇼 ---------- */
   function initSlideshow(ss){
