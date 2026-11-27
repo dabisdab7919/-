@@ -240,7 +240,7 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .nyt .nyt-h1,.nyt .nyt-h2,.vtc-h{text-wrap:balance}
 
 /* 본문은 좌우를 맞춤 (글자 사이로 여백을 나눠 줄마다 간격 차이를 줄임) */
-.nyt .nyt-p,.nyt .nyt-sum{text-align:justify;word-break:normal;overflow-wrap:break-word;hyphens:none}   /* 글자 단위로 줄을 바꿔야 줄마다 간격이 고르게 나뉨 */
+.nyt .nyt-p,.nyt .nyt-sum{text-align:justify;word-break:keep-all;overflow-wrap:break-word;hyphens:none}   /* 띄어쓰기(어절) 단위로만 줄을 바꾸고, 좌우는 맞춤 */
 .nyt .nyt-deck,.nyt .nyt-cap{text-align:left}
 /* 맨 위 사진 아래 정사각형 썸네일 */
 .nyt-thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
@@ -250,7 +250,7 @@ article.nyt{margin-top:-1.3rem}   /* 상단 메뉴와 HOME 사이 여백을 줄�
 .nyt-th:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .th-more{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font:700 1.35rem/1 var(--sans);letter-spacing:.02em}
 /* 설명은 큰 사진 높이에, 건축개요는 썸네일 높이에 맞춤 */
-.nyt-desc .nyt-p{font-size:var(--dfs,.84rem);line-height:1.5;margin:0 0 .6rem}
+.nyt-desc .nyt-p{font-size:var(--dfs,.78rem);line-height:1.5;margin:0 0 .6rem}
 .nyt-desc .nyt-sec{display:block}
 .nyt-desc .nyt-lab{margin-bottom:.4rem}
 .nyt-desc .nyt-sep{padding-top:.6rem;margin-top:.1rem}

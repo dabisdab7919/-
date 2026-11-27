@@ -113,7 +113,7 @@
     if(window.matchMedia('(max-width: 900px)').matches) return;
     var target = ss.getBoundingClientRect().width * 2 / 3, prev = desc.style.alignSelf;
     desc.style.alignSelf = 'start';
-    for(var fs = 1.0; fs >= 0.78; fs -= 0.02){
+    for(var fs = 0.92; fs >= 0.72; fs -= 0.02){
       desc.style.setProperty('--dfs', fs.toFixed(2) + 'rem');
       if(desc.offsetHeight <= target) break;
     }
