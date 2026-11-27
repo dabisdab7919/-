@@ -154,7 +154,7 @@ class Site:
 <header class="site-head wrap">
   <div class="head-row">
     <a class="head-link" href="index.html">{OWNER}</a>
-    <a class="masthead" href="index.html">Value through Connection</a>
+    <a class="masthead" href="index.html" aria-label="Value through Connection">Value <span class="thru">through</span> Connection</a>
     <a class="head-link" href="mailto:{EMAIL}">Mail</a>
   </div>
   <div class="head-row2">
@@ -324,7 +324,7 @@ class Site:
     <source src="assets/video/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-text">
-    <h1 class="vtc-h">Value through Connection</h1>
+    <h1 class="vtc-h" aria-label="Value through Connection">Value <span class="thru">through</span> Connection</h1>
     <p class="vtc">I design spaces that <span class="vc-u">connect</span> people, programs and places, and <span class="vc-u">create value</span> that can be felt and measured.</p>
   </div>
 </section>
