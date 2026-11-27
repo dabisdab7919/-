@@ -28,6 +28,16 @@ VIDEO_EXT = ('.mp4', '.webm', '.mov', '.m4v')
 PHOTO_EXT = ('.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif')
 
 
+def soft(text):
+    """5글자 이상 한글 어절에는 2글자 뒤~끝에서 2글자 앞 사이에 줄바꿈 가능 지점(<wbr>)을 넣음.
+    평소에는 띄어쓰기에서만 줄이 바뀌고, 줄 간격이 너무 벌어질 때만 긴 단어 안에서 끊김."""
+    def one(m):
+        w = m.group(0)
+        return ''.join(w[i] + ('<wbr>' if 2 <= i + 1 <= len(w) - 2 else '') for i in range(len(w)))
+    return ''.join(part if part.startswith('<') else re.sub(r'[\uac00-\ud7a3]{5,}', one, part)
+                   for part in re.split(r'(<[^>]+>)', text))
+
+
 def natural(name):
     return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', name)]
 
@@ -144,7 +154,7 @@ class Site:
 <header class="site-head wrap">
   <div class="head-row">
     <a class="head-link" href="index.html">{OWNER}</a>
-    <a class="masthead" href="index.html">Value through Connection</a>
+    <a class="masthead" href="index.html" aria-label="Value through Connection">Value <span class="thru">through</span> Connection</a>
     <a class="head-link" href="mailto:{EMAIL}">Mail</a>
   </div>
   <div class="head-row2">
@@ -179,7 +189,7 @@ class Site:
             for p in sec['paragraphs']:
                 for kw in [k for k in pending if k in p]:           # 키워드는 처음 나오는 곳에 밑줄
                     p = p.replace(kw, f'<span class="kw">{kw}</span>', 1); pending.remove(kw)
-                text += f'      <div class="nyt-p">{p}</div>\n'
+                text += f'      <div class="nyt-p">{soft(p)}</div>\n'
             text += '      </div>\n'
         lead = d['lead']
         rows = ''.join(f'        <dt>{f["label"]}</dt><dd>{f["value"]}</dd>\n' for f in d.get('facts', []) if f.get('value', '').strip())
@@ -196,7 +206,7 @@ class Site:
             alt = title_plain + " — " + html.unescape(re.sub(r"<[^>]+>", "", s["kicker"]))
             imgs = self.photos(slug, folder_key(s["kicker"])) or s["images"]
             cap_html = f'      <div class="nyt-cap"{cap_attr}>{cap_text}</div>\n' if cap_text.strip() else ''
-            summary = f'      <p class="nyt-sum">{s["summary"]}</p>\n' if s.get('summary') else ''
+            summary = f'      <p class="nyt-sum">{soft(s["summary"])}</p>\n' if s.get('summary') else ''
             stories += (f'    <div class="nyt-story">\n      <span class="nyt-k">{s["kicker"]}</span>\n'
                         f'      <div class="nyt-h2">{s["title"]}</div>\n'
                         f'      {self.slideshow(imgs, alt, autoplay=s.get("autoplay"), nozoom=s.get("nozoom", False), borders=s.get("borders", ()), lbcaps=s.get("lb_caps"))}\n'
@@ -209,7 +219,7 @@ class Site:
             ps = ''
             for p in d['notes']['paragraphs']:
                 lab = f'<span class="nyt-lab">{p["label"]}</span>' if p['label'] else ''
-                ps += f'      <div class="nyt-p">{lab}{p["text"]}</div>\n'
+                ps += f'      <div class="nyt-p">{lab}{soft(p["text"])}</div>\n'
             notes = f'  <div class="nyt-notes">\n    <h2 class="nyt-h2 nyt-nh">{d["notes"]["kicker"]}</h2>\n    <div class="nyt-cols">\n{ps}    </div>\n  </div>\n'
         fig = (f'  <div class="nyt-fig">{self.youtube(d["fig"]["youtube"], d["title"])}</div>\n' if d.get('fig', {}).get('youtube')
                else f'  <div class="nyt-fig">{self.fig(d["fig"]["hash"])}</div>\n' if d.get('fig') else '')
@@ -314,7 +324,7 @@ class Site:
     <source src="assets/video/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-text">
-    <h1 class="vtc-h">Value through Connection</h1>
+    <h1 class="vtc-h" aria-label="Value through Connection">Value <span class="thru">through</span> Connection</h1>
     <p class="vtc">I design spaces that <span class="vc-u">connect</span> people, programs and places, and <span class="vc-u">create value</span> that can be felt and measured.</p>
   </div>
 </section>
