@@ -28,6 +28,18 @@
     });
   });
 
+  /* ---------- 그래프 아래 목록: 유형이 아래 줄로 내려가면 가운데 점 숨김 ---------- */
+  function markWrapped(){
+    [].forEach.call(document.querySelectorAll('.g-m'), function(m){
+      var v = m.querySelector('.g-nw'), t = m.querySelector('.g-ty');
+      if(!v || !t) return;
+      m.classList.remove('is-wrapped');
+      if(t.offsetTop > v.offsetTop + 4) m.classList.add('is-wrapped');
+    });
+  }
+  markWrapped(); window.addEventListener('resize', markWrapped); window.addEventListener('load', markWrapped);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(markWrapped);
+
   /* ---------- 그래프: 아래 목록에 마우스를 올리면 해당 점 강조 ---------- */
   var dots = document.querySelectorAll('.g-dot');
   [].forEach.call(document.querySelectorAll('.g-cols li'), function(li, i){
